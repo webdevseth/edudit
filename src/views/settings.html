@@ -1,0 +1,811 @@
+<section class="view settings" data-feature="settings">
+  <header class="settings-header">
+    <div class="settings-header-content">
+      <p class="eyebrow">Preferences</p>
+
+      <h1 class="settings-title">Settings</h1>
+
+      <p class="settings-description">
+        Configure how EduDit teaches, sounds, and responds. Your learning
+        settings belong to the active learner.
+      </p>
+    </div>
+  </header>
+
+  <div class="settings-layout">
+    <!-- Settings navigation -->
+    <nav
+      class="settings-nav"
+      aria-label="Settings sections"
+      data-settings-nav
+    >
+      <button
+        type="button"
+        class="settings-nav-button settings-nav-button-active"
+        data-settings-section="learning"
+        aria-current="true"
+      >
+        <span class="settings-nav-icon" aria-hidden="true">◈</span>
+        Learning
+      </button>
+
+      <button
+        type="button"
+        class="settings-nav-button"
+        data-settings-section="receive"
+      >
+        <span class="settings-nav-icon" aria-hidden="true">◉</span>
+        Receive
+      </button>
+
+      <button
+        type="button"
+        class="settings-nav-button"
+        data-settings-section="audio"
+      >
+        <span class="settings-nav-icon" aria-hidden="true">♪</span>
+        Audio
+      </button>
+
+      <button
+        type="button"
+        class="settings-nav-button"
+        data-settings-section="appearance"
+      >
+        <span class="settings-nav-icon" aria-hidden="true">◐</span>
+        Appearance
+      </button>
+
+      <button
+        type="button"
+        class="settings-nav-button"
+        data-settings-section="profile"
+      >
+        <span class="settings-nav-icon" aria-hidden="true">◎</span>
+        Profile
+      </button>
+    </nav>
+
+    <div class="settings-content">
+
+      <!-- ================================================================
+           Learning
+           ================================================================ -->
+      <section
+        class="settings-section"
+        data-settings-panel="learning"
+      >
+        <header class="settings-section-header">
+          <h2 class="settings-section-title">Learning</h2>
+
+          <p class="settings-section-description">
+            Control how quickly EduDit introduces new material and how long
+            individual training sessions should be.
+          </p>
+        </header>
+
+        <div class="settings-section-body">
+
+          <!-- Learning pace -->
+          <div class="setting">
+            <div class="setting-info">
+              <label class="setting-label">
+                Learning pace
+              </label>
+
+              <p class="setting-description">
+                Choose how readily the adaptive system moves toward new
+                material.
+              </p>
+            </div>
+
+            <div class="setting-control">
+              <div
+                class="setting-options setting-options-3"
+                role="group"
+                aria-label="Learning pace"
+                data-setting-control="learningPace"
+              >
+                <button
+                  type="button"
+                  class="setting-option"
+                  data-setting-value="slow"
+                  data-setting-path="learning.learningPace"
+                >
+                  Relaxed
+                </button>
+
+                <button
+                  type="button"
+                  class="setting-option setting-option-active"
+                  data-setting-value="standard"
+                  data-setting-path="learning.learningPace"
+                >
+                  Standard
+                </button>
+
+                <button
+                  type="button"
+                  class="setting-option"
+                  data-setting-value="fast"
+                  data-setting-path="learning.learningPace"
+                >
+                  Fast
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Training mode -->
+          <div class="setting">
+            <div class="setting-info">
+              <label class="setting-label">
+                Training mode
+              </label>
+
+              <p class="setting-description">
+                Adaptive training chooses what you need most. Sequential
+                training follows the curriculum in order. Custom review keeps
+                control in your hands.
+              </p>
+            </div>
+
+            <div class="setting-control">
+              <div
+                class="setting-options setting-options-3"
+                role="group"
+                aria-label="Training mode"
+                data-setting-control="trainingMode"
+              >
+                <button
+                  type="button"
+                  class="setting-option setting-option-active"
+                  data-setting-value="adaptive"
+                  data-setting-path="learning.trainingMode"
+                >
+                  Adaptive
+                </button>
+
+                <button
+                  type="button"
+                  class="setting-option"
+                  data-setting-value="sequential"
+                  data-setting-path="learning.trainingMode"
+                >
+                  Sequential
+                </button>
+
+                <button
+                  type="button"
+                  class="setting-option"
+                  data-setting-value="custom"
+                  data-setting-path="learning.trainingMode"
+                >
+                  Custom
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Session length -->
+          <div class="setting">
+            <div class="setting-info">
+              <label
+                class="setting-label"
+                for="setting-session-length"
+              >
+                Session length
+              </label>
+
+              <p class="setting-description">
+                The target number of attempts in a normal training session.
+                You can end a session early at any time.
+              </p>
+            </div>
+
+            <div class="setting-control">
+              <div class="setting-value">
+                <input
+                  id="setting-session-length"
+                  name="sessionLength"
+                  type="number"
+                  min="5"
+                  max="100"
+                  step="1"
+                  value="20"
+                  data-setting-input="learning.sessionLength"
+                  aria-describedby="session-length-unit"
+                />
+
+                <span
+                  class="setting-value-unit"
+                  id="session-length-unit"
+                >
+                  attempts
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           Receive
+           ================================================================ -->
+      <section
+        class="settings-section"
+        data-settings-panel="receive"
+      >
+        <header class="settings-section-header">
+          <h2 class="settings-section-title">Receive</h2>
+
+          <p class="settings-section-description">
+            Configure Morse playback and the way EduDit evaluates your
+            response during receive practice.
+          </p>
+        </header>
+
+        <div class="settings-section-body">
+
+          <!-- WPM -->
+          <div class="setting">
+            <div class="setting-info">
+              <label
+                class="setting-label"
+                for="setting-wpm"
+              >
+                Morse speed
+              </label>
+
+              <p class="setting-description">
+                Controls the playback speed used for Morse training.
+              </p>
+            </div>
+
+            <div class="setting-control">
+              <div class="setting-range">
+                <div class="setting-range-header">
+                  <span
+                    class="setting-range-value"
+                    data-setting-range-value="receive.wpm"
+                  >
+                    20 WPM
+                  </span>
+                </div>
+
+                <input
+                  id="setting-wpm"
+                  name="wpm"
+                  type="range"
+                  min="5"
+                  max="60"
+                  step="1"
+                  value="20"
+                  data-setting-input="receive.wpm"
+                  aria-label="Morse speed in words per minute"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Tone frequency -->
+          <div class="setting">
+            <div class="setting-info">
+              <label
+                class="setting-label"
+                for="setting-tone-frequency"
+              >
+                Tone frequency
+              </label>
+
+              <p class="setting-description">
+                Choose the pitch of the Morse tone.
+              </p>
+            </div>
+
+            <div class="setting-control">
+              <div class="setting-range">
+                <div class="setting-range-header">
+                  <span
+                    class="setting-range-value"
+                    data-setting-range-value="receive.toneFrequencyHz"
+                  >
+                    600 Hz
+                  </span>
+                </div>
+
+                <input
+                  id="setting-tone-frequency"
+                  name="toneFrequencyHz"
+                  type="range"
+                  min="200"
+                  max="2000"
+                  step="50"
+                  value="600"
+                  data-setting-input="receive.toneFrequencyHz"
+                  aria-label="Morse tone frequency"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Response timing -->
+          <div class="setting">
+            <div class="setting-info">
+              <label class="setting-label">
+                Response timing
+              </label>
+
+              <p class="setting-description">
+                Decide when the response window becomes active during receive
+                practice.
+              </p>
+            </div>
+
+            <div class="setting-control">
+              <div
+                class="setting-options setting-options-3"
+                role="group"
+                aria-label="Response timing"
+                data-setting-control="responseTiming"
+              >
+                <button
+                  type="button"
+                  class="setting-option setting-option-active"
+                  data-setting-value="after-audio"
+                  data-setting-path="receive.responseTiming"
+                >
+                  After audio
+                </button>
+
+                <button
+                  type="button"
+                  class="setting-option"
+                  data-setting-value="during-audio"
+                  data-setting-path="receive.responseTiming"
+                >
+                  During audio
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Training keyboard -->
+          <div class="setting">
+            <div class="setting-info">
+              <span class="setting-label">
+                Show training keyboard
+              </span>
+
+              <p class="setting-description">
+                Display the optional visual keyboard during receive practice.
+                The keyboard never reveals the answer.
+              </p>
+            </div>
+
+            <div class="setting-control">
+              <div class="setting-toggle">
+                <button
+                  type="button"
+                  class="toggle"
+                  role="switch"
+                  aria-checked="true"
+                  aria-label="Show training keyboard"
+                  data-setting-toggle="receive.showKeyboard"
+                ></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hint behavior -->
+          <div class="setting">
+            <div class="setting-info">
+              <label class="setting-label">
+                Hint behavior
+              </label>
+
+              <p class="setting-description">
+                Choose whether hints are available manually, offered
+                automatically, or disabled.
+              </p>
+            </div>
+
+            <div class="setting-control">
+              <div
+                class="setting-options setting-options-3"
+                role="group"
+                aria-label="Hint behavior"
+                data-setting-control="hintBehavior"
+              >
+                <button
+                  type="button"
+                  class="setting-option setting-option-active"
+                  data-setting-value="manual"
+                  data-setting-path="receive.hintBehavior"
+                >
+                  Manual
+                </button>
+
+                <button
+                  type="button"
+                  class="setting-option"
+                  data-setting-value="automatic"
+                  data-setting-path="receive.hintBehavior"
+                >
+                  Automatic
+                </button>
+
+                <button
+                  type="button"
+                  class="setting-option"
+                  data-setting-value="disabled"
+                  data-setting-path="receive.hintBehavior"
+                >
+                  Disabled
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           Audio
+           ================================================================ -->
+      <section
+        class="settings-section"
+        data-settings-panel="audio"
+      >
+        <header class="settings-section-header">
+          <h2 class="settings-section-title">Audio</h2>
+
+          <p class="settings-section-description">
+            Configure optional background audio without affecting the Morse
+            training tone.
+          </p>
+        </header>
+
+        <div class="settings-section-body">
+
+          <!-- Background noise -->
+          <div class="setting">
+            <div class="setting-info">
+              <span class="setting-label">
+                Background noise
+              </span>
+
+              <p class="setting-description">
+                Add subtle background noise to make receive practice feel
+                closer to real-world listening conditions.
+              </p>
+            </div>
+
+            <div class="setting-control">
+              <div class="setting-toggle">
+                <button
+                  type="button"
+                  class="toggle"
+                  role="switch"
+                  aria-checked="false"
+                  aria-label="Background noise"
+                  data-setting-toggle="audio.backgroundNoiseEnabled"
+                ></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Background volume -->
+          <div class="setting">
+            <div class="setting-info">
+              <label
+                class="setting-label"
+                for="setting-background-volume"
+              >
+                Background volume
+              </label>
+
+              <p class="setting-description">
+                Set the volume of optional background noise independently
+                from Morse audio.
+              </p>
+            </div>
+
+            <div class="setting-control">
+              <div class="setting-range">
+                <div class="setting-range-header">
+                  <span
+                    class="setting-range-value"
+                    data-setting-range-value="audio.backgroundVolume"
+                  >
+                    8%
+                  </span>
+                </div>
+
+                <input
+                  id="setting-background-volume"
+                  name="backgroundVolume"
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value="0.08"
+                  data-setting-input="audio.backgroundVolume"
+                  aria-label="Background volume"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           Appearance
+           ================================================================ -->
+      <section
+        class="settings-section"
+        data-settings-panel="appearance"
+      >
+        <header class="settings-section-header">
+          <h2 class="settings-section-title">Appearance</h2>
+
+          <p class="settings-section-description">
+            Choose how EduDit should appear on this computer.
+          </p>
+        </header>
+
+        <div class="settings-section-body">
+
+          <div class="setting">
+            <div class="setting-info">
+              <span class="setting-label">
+                Theme
+              </span>
+
+              <p class="setting-description">
+                System follows your operating system preference. Light and
+                dark apply immediately.
+              </p>
+            </div>
+
+            <div class="setting-control">
+              <div
+                class="theme-options"
+                role="group"
+                aria-label="Theme"
+                data-setting-control="theme"
+              >
+                <button
+                  type="button"
+                  class="theme-option theme-option-active"
+                  data-setting-value="system"
+                  data-setting-path="appearance.theme"
+                >
+                  <span
+                    class="theme-preview theme-preview-system"
+                    aria-hidden="true"
+                  ></span>
+
+                  <span class="theme-option-label">
+                    System
+                  </span>
+
+                  <span class="theme-option-description">
+                    Follow device
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  class="theme-option"
+                  data-setting-value="light"
+                  data-setting-path="appearance.theme"
+                >
+                  <span
+                    class="theme-preview theme-preview-light"
+                    aria-hidden="true"
+                  ></span>
+
+                  <span class="theme-option-label">
+                    Light
+                  </span>
+
+                  <span class="theme-option-description">
+                    Bright interface
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  class="theme-option"
+                  data-setting-value="dark"
+                  data-setting-path="appearance.theme"
+                >
+                  <span
+                    class="theme-preview theme-preview-dark"
+                    aria-hidden="true"
+                  ></span>
+
+                  <span class="theme-option-label">
+                    Dark
+                  </span>
+
+                  <span class="theme-option-description">
+                    Dark interface
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           Profile
+           ================================================================ -->
+      <section
+        class="settings-section"
+        data-settings-panel="profile"
+      >
+        <header class="settings-section-header">
+          <h2 class="settings-section-title">Profile</h2>
+
+          <p class="settings-section-description">
+            Manage the learner whose progress and preferences are currently
+            active.
+          </p>
+        </header>
+
+        <div class="settings-section-body">
+
+          <div class="setting">
+            <div class="setting-info">
+              <span class="setting-label">
+                Current learner
+              </span>
+
+              <p class="setting-description">
+                Progress, mastery, session history, and learner settings are
+                isolated between profiles.
+              </p>
+            </div>
+
+            <div class="setting-control">
+              <div
+                class="setting-profile"
+                data-current-profile
+              >
+                <div
+                  class="setting-profile-avatar"
+                  data-current-profile-avatar
+                  aria-hidden="true"
+                >
+                  ?
+                </div>
+
+                <div class="setting-profile-info">
+                  <div
+                    class="setting-profile-name"
+                    data-current-profile-name
+                  >
+                    Loading…
+                  </div>
+
+                  <div
+                    class="setting-profile-detail"
+                    data-current-profile-detail
+                  >
+                    Active learner
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="setting">
+            <div class="setting-info">
+              <span class="setting-label">
+                Manage learners
+              </span>
+
+              <p class="setting-description">
+                Switch learner or create, rename, and manage profiles.
+              </p>
+            </div>
+
+            <div class="setting-control">
+              <button
+                type="button"
+                class="button button-secondary"
+                data-action="manage-profiles"
+              >
+                Manage Profiles
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           Save / reset actions
+           ================================================================ -->
+      <section class="settings-section">
+        <div class="settings-actions">
+          <span
+            class="settings-save-status"
+            data-settings-save-status
+            aria-live="polite"
+          >
+            Changes are saved automatically.
+          </span>
+
+          <button
+            type="button"
+            class="button button-secondary"
+            data-action="reset-settings"
+          >
+            Reset Defaults
+          </button>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           Danger zone
+           ================================================================ -->
+      <section class="settings-section settings-danger">
+        <header class="settings-section-header">
+          <h2 class="settings-section-title">
+            Data &amp; learner management
+          </h2>
+
+          <p class="settings-section-description settings-danger-description">
+            These actions affect learner data rather than ordinary display
+            preferences.
+          </p>
+        </header>
+
+        <div class="settings-danger-action">
+          <div class="settings-danger-action-info">
+            <h3 class="settings-danger-action-title">
+              Manage profiles
+            </h3>
+
+            <p class="settings-danger-action-description">
+              Create, rename, switch, archive, or remove learner profiles.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            class="button button-secondary"
+            data-action="manage-profiles"
+          >
+            Manage Profiles
+          </button>
+        </div>
+
+        <div class="settings-danger-action">
+          <div class="settings-danger-action-info">
+            <h3 class="settings-danger-action-title">
+              Reset current learner
+            </h3>
+
+            <p class="settings-danger-action-description">
+              Reset the active learner's learning progress and training
+              history. This action will require confirmation before anything
+              is removed.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            class="button button-danger"
+            data-action="reset-profile"
+          >
+            Reset Learner
+          </button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</section>
