@@ -1,0 +1,441 @@
+<section
+  class="receive"
+  aria-labelledby="receive-title"
+>
+  <!-- =======================================================================
+       Header
+       ======================================================================= -->
+
+  <header class="receive-header">
+    <div class="receive-header-content">
+      <p class="receive-mode">
+        <span
+          class="receive-mode-indicator"
+          aria-hidden="true"
+        ></span>
+
+        <span data-receive-mode>
+          Adaptive Practice
+        </span>
+      </p>
+
+      <h1
+        id="receive-title"
+        class="receive-title"
+      >
+        Receive
+      </h1>
+
+      <p class="receive-description">
+        Listen carefully, identify the character, and build recognition
+        through repeated exposure.
+      </p>
+    </div>
+
+    <div class="receive-header-actions">
+      <button
+        type="button"
+        class="button button-secondary button-small"
+        data-receive-pause
+      >
+        Pause
+      </button>
+
+      <button
+        type="button"
+        class="button button-secondary button-small"
+        data-receive-resume
+        hidden
+      >
+        Resume
+      </button>
+    </div>
+  </header>
+
+
+  <!-- =======================================================================
+       Session Progress
+       ======================================================================= -->
+
+  <section
+    class="receive-session-progress"
+    aria-label="Session progress"
+  >
+    <div
+      class="progress receive-session-progress-bar"
+      role="progressbar"
+      aria-label="Training session progress"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="0"
+      data-receive-progress
+    >
+      <div
+        class="progress-bar"
+        style="width: 0%"
+        data-receive-progress-bar
+      ></div>
+    </div>
+
+    <span
+      class="receive-session-progress-label"
+      data-receive-progress-label
+    >
+      0 / 20
+    </span>
+  </section>
+
+
+  <!-- =======================================================================
+       Training Stage
+       ======================================================================= -->
+
+  <section
+    class="receive-stage"
+    data-receive-training
+    aria-label="Morse receive training"
+  >
+    <!-- =====================================================================
+         Listening
+         ===================================================================== -->
+
+    <div
+      class="receive-listening"
+      data-receive-listening
+    >
+      <p class="receive-listening-label">
+        Listen carefully
+      </p>
+
+      <div
+        class="receive-listening-status"
+        role="status"
+        aria-live="polite"
+      >
+        <span
+          class="receive-audio-indicator"
+          aria-hidden="true"
+        >
+          <span class="receive-audio-bar"></span>
+          <span class="receive-audio-bar"></span>
+          <span class="receive-audio-bar"></span>
+          <span class="receive-audio-bar"></span>
+        </span>
+
+        <span>
+          Playing Morse
+        </span>
+      </div>
+    </div>
+
+
+    <!-- =====================================================================
+         Answer Area
+         ===================================================================== -->
+
+    <div
+      class="receive-answer"
+      data-receive-answer-area
+      hidden
+    >
+      <p
+        class="receive-answer-prompt"
+        data-receive-material-label
+      >
+        What did you hear?
+      </p>
+
+      <p
+        class="receive-answer-instruction"
+        data-receive-answer-instruction
+      >
+        Enter the character you heard.
+      </p>
+
+      <form
+        class="receive-answer-form"
+        data-receive-answer-form
+      >
+        <input
+          type="text"
+          class="input receive-answer-input"
+          data-receive-answer
+          autocomplete="off"
+          autocapitalize="characters"
+          spellcheck="false"
+          maxlength="1"
+          inputmode="text"
+          aria-label="Enter the character you heard"
+        />
+
+        <button
+          type="submit"
+          class="button button-primary receive-answer-submit"
+          data-receive-submit
+          disabled
+        >
+          Submit
+        </button>
+      </form>
+
+
+      <!-- ===================================================================
+           Replay Controls
+           =================================================================== -->
+
+      <div class="receive-controls">
+        <button
+          type="button"
+          class="receive-control"
+          data-receive-replay
+          disabled
+        >
+          Replay
+        </button>
+      </div>
+
+
+      <!-- ===================================================================
+           Hint
+           =================================================================== -->
+
+      <div
+        class="receive-hint"
+        data-receive-hint
+      >
+        <button
+          type="button"
+          class="receive-control receive-hint-button"
+          data-receive-hint-button
+        >
+          Hint
+        </button>
+
+        <div
+          class="receive-hint-content"
+          data-receive-hint-content
+          aria-live="polite"
+          aria-label="Morse hint"
+        ></div>
+      </div>
+    </div>
+
+
+    <!-- =====================================================================
+         Feedback
+         ===================================================================== -->
+
+    <div
+      class="receive-feedback"
+      data-receive-feedback
+      hidden
+      aria-live="polite"
+    >
+      <p
+        class="receive-feedback-status"
+        data-receive-feedback-status
+      ></p>
+
+      <p
+        class="receive-feedback-detail"
+        data-receive-feedback-detail
+      ></p>
+
+      <p
+        class="receive-feedback-answer"
+        data-receive-feedback-answer
+      ></p>
+
+      <p
+        class="receive-feedback-morse"
+        data-receive-feedback-morse
+      ></p>
+    </div>
+
+
+    <!-- =====================================================================
+         Paused State
+         ===================================================================== -->
+
+    <div
+      class="receive-next"
+      data-receive-paused
+      hidden
+    >
+      <p class="section-description">
+        Your session is paused.
+      </p>
+
+      <button
+        type="button"
+        class="button button-primary"
+        data-receive-resume
+      >
+        Resume training
+      </button>
+    </div>
+
+
+    <!-- =====================================================================
+         Attempt Context
+         ===================================================================== -->
+
+    <p
+      class="stat-detail"
+      aria-live="polite"
+    >
+      Attempt
+      <span data-receive-attempt-number>
+        1
+      </span>
+    </p>
+  </section>
+
+
+  <!-- =======================================================================
+       Empty State
+       ======================================================================= -->
+
+  <section
+    class="card"
+    data-receive-empty
+    hidden
+    aria-labelledby="receive-empty-title"
+  >
+    <h2
+      id="receive-empty-title"
+      class="section-title"
+    >
+      No training material is available yet
+    </h2>
+
+    <p class="section-description">
+      EduDit could not find unlocked characters for this learner. Complete
+      your first lesson before starting receive practice.
+    </p>
+
+    <div class="button-group">
+      <a
+        href="#lessons"
+        class="button button-primary"
+        data-route="lessons"
+      >
+        Go to lessons
+      </a>
+    </div>
+  </section>
+
+
+  <!-- =======================================================================
+       Complete State
+       ======================================================================= -->
+
+  <section
+    class="card"
+    data-receive-complete
+    hidden
+    aria-labelledby="receive-complete-title"
+  >
+    <header class="section-header">
+      <div>
+        <p class="dashboard-eyebrow">
+          Session complete
+        </p>
+
+        <h2
+          id="receive-complete-title"
+          class="section-title"
+        >
+          Nice work
+        </h2>
+
+        <p class="section-description">
+          Your session has been recorded. Keep practicing to strengthen
+          recognition and build automatic recall.
+        </p>
+      </div>
+    </header>
+
+    <p class="stat-detail">
+      Attempts completed:
+      <strong data-receive-complete-attempts>
+        0
+      </strong>
+    </p>
+
+    <div class="button-group">
+      <button
+        type="button"
+        class="button button-primary"
+        data-receive-restart
+      >
+        Practice again
+      </button>
+
+      <a
+        href="#dashboard"
+        class="button button-secondary"
+        data-route="dashboard"
+      >
+        Return to dashboard
+      </a>
+
+      <a
+        href="#progress"
+        class="button button-secondary"
+        data-route="progress"
+      >
+        View progress
+      </a>
+    </div>
+  </section>
+
+
+  <!-- =======================================================================
+       Session Statistics
+       ======================================================================= -->
+
+  <section
+    class="receive-session-stats"
+    aria-label="Current session statistics"
+  >
+    <div class="receive-session-stat">
+      <p class="receive-session-stat-label">
+        Attempts
+      </p>
+
+      <p
+        class="stat-value"
+        data-receive-stat-attempts
+      >
+        0
+      </p>
+    </div>
+
+    <div class="receive-session-stat">
+      <p class="receive-session-stat-label">
+        Accuracy
+      </p>
+
+      <p
+        class="stat-value"
+        data-receive-stat-accuracy
+      >
+        —
+      </p>
+    </div>
+
+    <div class="receive-session-stat">
+      <p class="receive-session-stat-label">
+        Avg. response
+      </p>
+
+      <p
+        class="stat-value"
+        data-receive-stat-response
+      >
+        —
+      </p>
+    </div>
+  </section>
+</section>
