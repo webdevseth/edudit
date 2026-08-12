@@ -1,0 +1,579 @@
+<section
+  class="send"
+  aria-labelledby="send-title"
+>
+  <!-- =======================================================================
+       Header
+       ======================================================================= -->
+
+  <header class="send-header">
+    <div class="send-header-content">
+      <p class="send-mode">
+        <span
+          class="send-mode-indicator"
+          aria-hidden="true"
+        ></span>
+
+```
+    <span data-send-mode>
+      Adaptive Practice
+    </span>
+  </p>
+
+  <h1
+    id="send-title"
+    class="send-title"
+  >
+    Send
+  </h1>
+
+  <p class="send-description">
+    Build Morse fluency by keying each character yourself. Focus on
+    accurate elements first, then develop a steady rhythm and speed.
+  </p>
+</div>
+
+<div class="send-header-actions">
+  <button
+    type="button"
+    class="button button-secondary button-small"
+    data-send-pause
+  >
+    Pause
+  </button>
+
+  <button
+    type="button"
+    class="button button-secondary button-small"
+    data-send-resume
+    hidden
+  >
+    Resume
+  </button>
+</div>
+```
+
+  </header>
+
+  <!-- =======================================================================
+       Session Progress
+       ======================================================================= -->
+
+  <section
+    class="send-session-progress"
+    aria-label="Session progress"
+  >
+    <div
+      class="progress send-session-progress-bar"
+      role="progressbar"
+      aria-label="Sending session progress"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow="0"
+      data-send-progress
+    >
+      <div
+        class="progress-bar"
+        style="width: 0%"
+        data-send-progress-fill
+      ></div>
+    </div>
+
+```
+<span
+  class="send-session-progress-label"
+  data-send-progress-label
+>
+  0 / 20
+</span>
+```
+
+  </section>
+
+  <!-- =======================================================================
+       Training Stage
+       ======================================================================= -->
+
+  <section
+    class="send-stage"
+    data-send-training
+    aria-label="Morse sending training"
+  >
+
+```
+<!-- =====================================================================
+     Target
+     ===================================================================== -->
+
+<div class="send-target-area">
+  <p
+    class="send-target-label"
+    data-send-target-label
+  >
+    Send this character
+  </p>
+
+  <p
+    class="send-target"
+    data-send-target
+    aria-live="polite"
+  >
+    —
+  </p>
+</div>
+
+
+<!-- =====================================================================
+     Morse Input
+     ===================================================================== -->
+
+<div class="send-input-area">
+  <p class="send-input-label">
+    Your Morse
+  </p>
+
+  <div
+    class="send-input-display send-input-empty"
+    data-send-input-display
+    role="status"
+    aria-live="polite"
+    aria-label="Current Morse input"
+  >
+    <span
+      class="send-input-placeholder"
+      data-send-input-placeholder
+    >
+      Press and hold the key to send Morse
+    </span>
+  </div>
+
+  <p
+    class="send-input-count"
+    aria-live="polite"
+  >
+    <span data-send-input-count>0</span>
+    element<span data-send-input-count-plural>s</span>
+  </p>
+</div>
+
+
+<!-- =====================================================================
+     Keying Status
+     ===================================================================== -->
+
+<div
+  class="send-keying-status"
+  data-send-keying
+  role="status"
+  aria-live="polite"
+>
+  <span
+    class="send-keying-indicator"
+    aria-hidden="true"
+  ></span>
+
+  <span data-send-keying-label>
+    Ready
+  </span>
+</div>
+
+
+<!-- =====================================================================
+     Primary Morse Key
+     ===================================================================== -->
+
+<button
+  type="button"
+  class="send-key"
+  data-send-key
+  aria-label="Morse key. Press and hold to send Morse"
+>
+  <span>
+    <span class="send-key-label">
+      Morse Key
+    </span>
+
+    <span class="send-key-hint">
+      Hold to key · Spacebar also works
+    </span>
+  </span>
+</button>
+
+
+<!-- =====================================================================
+     Controls
+     ===================================================================== -->
+
+<div class="send-controls">
+  <button
+    type="button"
+    class="button button-secondary send-control"
+    data-send-clear
+    disabled
+  >
+    Clear
+  </button>
+
+  <button
+    type="button"
+    class="button button-primary send-control"
+    data-send-submit
+    disabled
+  >
+    Submit
+  </button>
+</div>
+
+
+<!-- =====================================================================
+     Timing
+     ===================================================================== -->
+
+<div
+  class="send-timing"
+  aria-label="Current sending settings"
+>
+  <div class="send-timing-item">
+    <p class="send-timing-label">
+      Speed
+    </p>
+
+    <p
+      class="send-timing-value"
+      data-send-timing-wpm
+    >
+      20 WPM
+    </p>
+  </div>
+
+  <div class="send-timing-item">
+    <p class="send-timing-label">
+      Expected
+    </p>
+
+    <p
+      class="send-timing-value"
+      data-send-expected
+    >
+      —
+    </p>
+  </div>
+
+  <div class="send-timing-item">
+    <p class="send-timing-label">
+      Attempt
+    </p>
+
+    <p
+      class="send-timing-value"
+      data-send-attempt-number
+    >
+      1
+    </p>
+  </div>
+</div>
+
+
+<!-- =====================================================================
+     Input Source
+     ===================================================================== -->
+
+<p class="send-input-source">
+  <span
+    class="send-input-source-icon"
+    aria-hidden="true"
+  ></span>
+
+  Keyboard or on-screen key
+</p>
+
+
+<!-- =====================================================================
+     Feedback
+     ===================================================================== -->
+
+<div
+  class="send-feedback"
+  data-send-feedback
+  hidden
+  aria-live="polite"
+>
+  <p
+    class="send-feedback-status"
+    data-send-feedback-status
+  ></p>
+
+  <p
+    class="send-feedback-detail"
+    data-send-feedback-detail
+  ></p>
+
+  <p class="send-feedback-expected">
+    Expected:
+    <span data-send-feedback-expected>
+      —
+    </span>
+  </p>
+
+  <p class="send-feedback-expected">
+    You sent:
+    <span data-send-feedback-actual>
+      —
+    </span>
+  </p>
+
+  <p class="send-feedback-detail">
+    Timing:
+    <strong data-send-feedback-timing>
+      —
+    </strong>
+    <span aria-hidden="true"> · </span>
+    Response:
+    <strong data-send-feedback-response>
+      —
+    </strong>
+  </p>
+</div>
+
+
+<!-- =====================================================================
+     Paused State
+     ===================================================================== -->
+
+<div
+  class="send-next"
+  data-send-paused
+  hidden
+>
+  <p class="section-description">
+    Your sending session is paused.
+  </p>
+
+  <button
+    type="button"
+    class="button button-primary"
+    data-send-resume
+  >
+    Resume training
+  </button>
+</div>
+```
+
+  </section>
+
+  <!-- =======================================================================
+       Empty State
+       ======================================================================= -->
+
+  <section
+    class="card"
+    data-send-empty
+    hidden
+    aria-labelledby="send-empty-title"
+  >
+    <h2
+      id="send-empty-title"
+      class="section-title"
+    >
+      No sending material is available yet
+    </h2>
+
+```
+<p class="section-description">
+  EduDit could not find unlocked characters for this learner. Complete
+  your first lesson before starting Send practice.
+</p>
+
+<div class="button-group">
+  <a
+    href="#lessons"
+    class="button button-primary"
+    data-route="lessons"
+  >
+    Go to lessons
+  </a>
+</div>
+```
+
+  </section>
+
+  <!-- =======================================================================
+       Completion State
+       ======================================================================= -->
+
+  <section
+    class="send-complete card"
+    data-send-complete
+    hidden
+    aria-labelledby="send-complete-title"
+  >
+    <div
+      class="send-complete-icon"
+      aria-hidden="true"
+    >
+      ✓
+    </div>
+
+```
+<h2
+  id="send-complete-title"
+  class="send-complete-title"
+>
+  Session complete
+</h2>
+
+<p class="send-complete-description">
+  Nice work. Your sending attempts have been recorded. Keep practicing
+  to make your Morse rhythm more accurate and automatic.
+</p>
+
+<div
+  class="send-complete-stats"
+  aria-label="Completed session statistics"
+>
+  <div class="send-complete-stat">
+    <p class="send-timing-label">
+      Attempts
+    </p>
+
+    <p
+      class="send-timing-value"
+      data-send-complete-attempts
+    >
+      0
+    </p>
+  </div>
+
+  <div class="send-complete-stat">
+    <p class="send-timing-label">
+      Correct
+    </p>
+
+    <p
+      class="send-timing-value"
+      data-send-complete-correct
+    >
+      0
+    </p>
+  </div>
+
+  <div class="send-complete-stat">
+    <p class="send-timing-label">
+      Accuracy
+    </p>
+
+    <p
+      class="send-timing-value"
+      data-send-complete-accuracy
+    >
+      0%
+    </p>
+  </div>
+
+  <div class="send-complete-stat">
+    <p class="send-timing-label">
+      Avg. response
+    </p>
+
+    <p
+      class="send-timing-value"
+      data-send-complete-response
+    >
+      —
+    </p>
+  </div>
+</div>
+
+<div class="send-complete-actions">
+  <button
+    type="button"
+    class="button button-primary"
+    data-send-restart
+  >
+    Practice again
+  </button>
+
+  <a
+    href="#dashboard"
+    class="button button-secondary"
+    data-route="dashboard"
+  >
+    Return to dashboard
+  </a>
+
+  <a
+    href="#progress"
+    class="button button-secondary"
+    data-route="progress"
+  >
+    View progress
+  </a>
+</div>
+```
+
+  </section>
+
+  <!-- =======================================================================
+       Session Statistics
+       ======================================================================= -->
+
+  <section
+    class="send-session-stats"
+    aria-label="Current session statistics"
+  >
+    <div class="send-session-stat">
+      <p class="send-session-stat-label">
+        Attempts
+      </p>
+
+```
+  <p
+    class="send-session-stat-value"
+    data-send-stat-total
+  >
+    0
+  </p>
+</div>
+
+<div class="send-session-stat">
+  <p class="send-session-stat-label">
+    Correct
+  </p>
+
+  <p
+    class="send-session-stat-value"
+    data-send-stat-correct
+  >
+    0
+  </p>
+</div>
+
+<div class="send-session-stat">
+  <p class="send-session-stat-label">
+    Accuracy
+  </p>
+
+  <p
+    class="send-session-stat-value"
+    data-send-stat-accuracy
+  >
+    0%
+  </p>
+</div>
+
+<div class="send-session-stat">
+  <p class="send-session-stat-label">
+    Avg. response
+  </p>
+
+  <p
+    class="send-session-stat-value"
+    data-send-stat-response
+  >
+    —
+  </p>
+</div>
+```
+
+  </section>
+</section>
