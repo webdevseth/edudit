@@ -1,0 +1,587 @@
+<section class="progress-page" aria-labelledby="progress-title">
+  <!-- =======================================================================
+       Header
+       ======================================================================= -->
+
+  <header class="page-header progress-header">
+    <div>
+      <p class="page-eyebrow">Learning analytics</p>
+
+      <h1 id="progress-title" class="page-title">
+        Progress
+      </h1>
+
+      <p class="page-description">
+        See how your Morse recognition skills are developing over time.
+      </p>
+    </div>
+
+    <div class="progress-header-actions">
+      <button
+        type="button"
+        class="button button-secondary button-small"
+        data-progress-refresh
+      >
+        Refresh
+      </button>
+    </div>
+  </header>
+
+  <!-- =======================================================================
+       Overview Statistics
+       ======================================================================= -->
+
+  <section
+    class="progress-overview"
+    aria-label="Overall progress statistics"
+  >
+    <article class="card progress-stat-card">
+      <p class="stat-label">Characters learned</p>
+
+      <p
+        class="stat-value"
+        data-progress-stat="characters"
+      >
+        0
+      </p>
+
+      <p
+        class="stat-detail"
+        data-progress-stat-detail="characters"
+      >
+        of 26
+      </p>
+    </article>
+
+    <article class="card progress-stat-card">
+      <p class="stat-label">Accuracy</p>
+
+      <p
+        class="stat-value"
+        data-progress-stat="accuracy"
+      >
+        —
+      </p>
+
+      <p
+        class="stat-detail"
+        data-progress-stat-detail="accuracy"
+      >
+        No attempts yet
+      </p>
+    </article>
+
+    <article class="card progress-stat-card">
+      <p class="stat-label">Average response</p>
+
+      <p
+        class="stat-value"
+        data-progress-stat="response-time"
+      >
+        —
+      </p>
+
+      <p
+        class="stat-detail"
+        data-progress-stat-detail="response-time"
+      >
+        No response data yet
+      </p>
+    </article>
+
+    <article class="card progress-stat-card">
+      <p class="stat-label">Training sessions</p>
+
+      <p
+        class="stat-value"
+        data-progress-stat="sessions"
+      >
+        0
+      </p>
+
+      <p
+        class="stat-detail"
+        data-progress-stat-detail="sessions"
+      >
+        Sessions completed
+      </p>
+    </article>
+
+    <article class="card progress-stat-card">
+      <p class="stat-label">Training time</p>
+
+      <p
+        class="stat-value"
+        data-progress-stat="training-time"
+      >
+        0m
+      </p>
+
+      <p
+        class="stat-detail"
+        data-progress-stat-detail="training-time"
+      >
+        Total learning time
+      </p>
+    </article>
+
+    <article class="card progress-stat-card">
+      <p class="stat-label">Current streak</p>
+
+      <p
+        class="stat-value"
+        data-progress-stat="streak"
+      >
+        0
+      </p>
+
+      <p
+        class="stat-detail"
+        data-progress-stat-detail="streak"
+      >
+        Sessions
+      </p>
+    </article>
+  </section>
+
+  <!-- =======================================================================
+       Trends
+       ======================================================================= -->
+
+  <section
+    class="progress-trends"
+    aria-label="Progress trends"
+  >
+    <!-- Accuracy Trend -->
+
+    <article class="card progress-chart-card">
+      <header class="section-header">
+        <div>
+          <h2 class="section-title">
+            Accuracy over time
+          </h2>
+
+          <p class="section-description">
+            How accurately you have been recognizing Morse recently.
+          </p>
+        </div>
+
+        <div
+          class="progress-chart-summary"
+          data-progress-chart-summary="accuracy"
+        >
+          —
+        </div>
+      </header>
+
+      <div
+        class="progress-chart"
+        data-progress-chart="accuracy"
+        role="img"
+        aria-label="Accuracy over time chart"
+      >
+        <div
+          class="progress-chart-empty"
+          data-progress-chart-empty="accuracy"
+        >
+          <span class="progress-chart-empty-title">
+            Not enough data yet
+          </span>
+
+          <span class="progress-chart-empty-description">
+            Complete a few training sessions to see your accuracy trend.
+          </span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Response Time Trend -->
+
+    <article class="card progress-chart-card">
+      <header class="section-header">
+        <div>
+          <h2 class="section-title">
+            Response time
+          </h2>
+
+          <p class="section-description">
+            How quickly you are recognizing characters.
+          </p>
+        </div>
+
+        <div
+          class="progress-chart-summary"
+          data-progress-chart-summary="response-time"
+        >
+          —
+        </div>
+      </header>
+
+      <div
+        class="progress-chart"
+        data-progress-chart="response-time"
+        role="img"
+        aria-label="Response time trend chart"
+      >
+        <div
+          class="progress-chart-empty"
+          data-progress-chart-empty="response-time"
+        >
+          <span class="progress-chart-empty-title">
+            Not enough data yet
+          </span>
+
+          <span class="progress-chart-empty-description">
+            More response data will make this trend more meaningful.
+          </span>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- =======================================================================
+       Mastery + Training Time
+       ======================================================================= -->
+
+  <section
+    class="progress-analysis-grid"
+    aria-label="Progress analysis"
+  >
+    <!-- Mastery Distribution -->
+
+    <article class="card progress-analysis-card">
+      <header class="section-header">
+        <div>
+          <h2 class="section-title">
+            Mastery distribution
+          </h2>
+
+          <p class="section-description">
+            Where your learned characters currently stand.
+          </p>
+        </div>
+      </header>
+
+      <div
+        class="mastery-distribution"
+        data-progress-mastery
+      >
+        <div
+          class="mastery-chart"
+          data-progress-mastery-chart
+          role="img"
+          aria-label="Mastery distribution chart"
+        >
+          <div class="mastery-chart-empty">
+            <span class="mastery-chart-empty-title">
+              No mastery data yet
+            </span>
+          </div>
+        </div>
+
+        <div class="mastery-legend">
+          <div
+            class="mastery-legend-item"
+            data-mastery-level="new"
+          >
+            <span
+              class="mastery-legend-marker"
+              aria-hidden="true"
+            ></span>
+
+            <span class="mastery-legend-label">
+              New
+            </span>
+
+            <strong
+              class="mastery-legend-value"
+              data-mastery-count="new"
+            >
+              0
+            </strong>
+          </div>
+
+          <div
+            class="mastery-legend-item"
+            data-mastery-level="developing"
+          >
+            <span
+              class="mastery-legend-marker"
+              aria-hidden="true"
+            ></span>
+
+            <span class="mastery-legend-label">
+              Developing
+            </span>
+
+            <strong
+              class="mastery-legend-value"
+              data-mastery-count="developing"
+            >
+              0
+            </strong>
+          </div>
+
+          <div
+            class="mastery-legend-item"
+            data-mastery-level="strong"
+          >
+            <span
+              class="mastery-legend-marker"
+              aria-hidden="true"
+            ></span>
+
+            <span class="mastery-legend-label">
+              Strong
+            </span>
+
+            <strong
+              class="mastery-legend-value"
+              data-mastery-count="strong"
+            >
+              0
+            </strong>
+          </div>
+
+          <div
+            class="mastery-legend-item"
+            data-mastery-level="mastered"
+          >
+            <span
+              class="mastery-legend-marker"
+              aria-hidden="true"
+            ></span>
+
+            <span class="mastery-legend-label">
+              Mastered
+            </span>
+
+            <strong
+              class="mastery-legend-value"
+              data-mastery-count="mastered"
+            >
+              0
+            </strong>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Training Time -->
+
+    <article class="card progress-analysis-card">
+      <header class="section-header">
+        <div>
+          <h2 class="section-title">
+            Learning time
+          </h2>
+
+          <p class="section-description">
+            Time spent training across recent days and weeks.
+          </p>
+        </div>
+
+        <div
+          class="progress-chart-summary"
+          data-progress-chart-summary="training-time"
+        >
+          —
+        </div>
+      </header>
+
+      <div
+        class="progress-chart progress-chart-bar"
+        data-progress-chart="training-time"
+        role="img"
+        aria-label="Training time by day chart"
+      >
+        <div
+          class="progress-chart-empty"
+          data-progress-chart-empty="training-time"
+        >
+          <span class="progress-chart-empty-title">
+            No training time yet
+          </span>
+
+          <span class="progress-chart-empty-description">
+            Your learning activity will appear here as you practice.
+          </span>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- =======================================================================
+       Character Performance
+       ======================================================================= -->
+
+  <section
+    class="card progress-characters-card"
+    aria-labelledby="character-performance-title"
+  >
+    <header class="section-header progress-characters-header">
+      <div>
+        <h2
+          id="character-performance-title"
+          class="section-title"
+        >
+          Character performance
+        </h2>
+
+        <p class="section-description">
+          See which characters are strong, developing, or in need of
+          reinforcement.
+        </p>
+      </div>
+
+      <div class="progress-character-controls">
+        <label
+          class="field-label"
+          for="progress-character-sort"
+        >
+          Sort by
+        </label>
+
+        <select
+          id="progress-character-sort"
+          class="input"
+          data-progress-character-sort
+        >
+          <option value="mastery">Mastery</option>
+          <option value="accuracy">Accuracy</option>
+          <option value="response-time">Response time</option>
+          <option value="attempts">Most practiced</option>
+          <option value="improvement">Most improved</option>
+          <option value="character">Character</option>
+        </select>
+      </div>
+    </header>
+
+    <div class="progress-character-table-wrapper">
+      <table class="progress-character-table">
+        <thead>
+          <tr>
+            <th scope="col">Character</th>
+            <th scope="col">Accuracy</th>
+            <th scope="col">Response</th>
+            <th scope="col">Attempts</th>
+            <th scope="col">Mastery</th>
+            <th scope="col">Trend</th>
+          </tr>
+        </thead>
+
+        <tbody data-progress-character-list>
+          <tr class="progress-character-empty">
+            <td colspan="6">
+              <div class="empty-state">
+                <h3 class="empty-state-title">
+                  No character data yet
+                </h3>
+
+                <p class="empty-state-description">
+                  Character performance will appear after you begin
+                  receiving Morse practice.
+                </p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- =======================================================================
+       Weakest Characters
+       ======================================================================= -->
+
+  <section
+    class="progress-bottom-grid"
+    aria-label="Character improvement"
+  >
+    <!-- Weakest -->
+
+    <article class="card progress-focus-card">
+      <header class="section-header">
+        <div>
+          <h2 class="section-title">
+            Needs reinforcement
+          </h2>
+
+          <p class="section-description">
+            Characters currently receiving additional adaptive attention.
+          </p>
+        </div>
+      </header>
+
+      <div
+        class="progress-weak-list"
+        data-progress-weak
+      >
+        <div class="empty-state">
+          <h3 class="empty-state-title">
+            Nothing to reinforce yet
+          </h3>
+
+          <p class="empty-state-description">
+            As your training history develops, EduDit will identify
+            characters that need more practice.
+          </p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Improvement -->
+
+    <article class="card progress-focus-card">
+      <header class="section-header">
+        <div>
+          <h2 class="section-title">
+            Recent improvement
+          </h2>
+
+          <p class="section-description">
+            Characters showing the strongest recent gains.
+          </p>
+        </div>
+      </header>
+
+      <div
+        class="progress-improvement-list"
+        data-progress-improvement
+      >
+        <div class="empty-state">
+          <h3 class="empty-state-title">
+            Improvement will appear here
+          </h3>
+
+          <p class="empty-state-description">
+            Keep practicing to build enough history for meaningful
+            improvement comparisons.
+          </p>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- =======================================================================
+       Actions
+       ======================================================================= -->
+
+  <section class="progress-actions">
+    <a
+      href="#receive"
+      class="button button-primary button-large"
+      data-route="receive"
+    >
+      Continue training
+    </a>
+
+    <a
+      href="#lessons"
+      class="button button-secondary button-large"
+      data-route="lessons"
+    >
+      Browse lessons
+    </a>
+  </section>
+</section>
