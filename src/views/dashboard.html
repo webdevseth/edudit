@@ -1,0 +1,543 @@
+<section class="dashboard" aria-labelledby="dashboard-title">
+  <!-- =======================================================================
+       Welcome
+       ======================================================================= -->
+
+  <header class="dashboard-welcome">
+    <div class="dashboard-welcome-content">
+      <p class="dashboard-eyebrow">
+        <span data-dashboard-eyebrow>Welcome back</span>
+      </p>
+
+      <h1
+        id="dashboard-title"
+        class="dashboard-title"
+        data-dashboard-title
+      >
+        Welcome back
+      </h1>
+
+      <p
+        class="dashboard-subtitle"
+        data-dashboard-subtitle
+      >
+        Keep building your Morse recognition skills with focused listening
+        practice.
+      </p>
+    </div>
+  </header>
+
+  <!-- =======================================================================
+       Continue Training
+       ======================================================================= -->
+
+  <section
+    class="continue-card"
+    aria-labelledby="continue-training-title"
+    data-dashboard-continue-section
+  >
+    <div class="continue-card-content">
+      <p class="continue-card-eyebrow">
+        <span data-dashboard-training-eyebrow>
+          Adaptive practice
+        </span>
+      </p>
+
+      <h2
+        id="continue-training-title"
+        class="continue-card-title"
+        data-dashboard-training-title
+      >
+        Continue training
+      </h2>
+
+      <p
+        class="continue-card-description"
+        data-dashboard-training-description
+      >
+        Practice the characters that will help you make the most progress.
+      </p>
+
+      <div class="continue-card-action">
+        <a
+          href="#receive"
+          class="button button-primary button-large"
+          data-route="receive"
+        >
+          Continue training
+        </a>
+      </div>
+    </div>
+
+    <div
+      class="continue-card-decoration"
+      aria-hidden="true"
+    ></div>
+  </section>
+
+  <!-- =======================================================================
+       First Use
+       ======================================================================= -->
+
+  <section
+    class="dashboard-first-use"
+    data-dashboard-first-use
+    hidden
+    aria-labelledby="dashboard-first-use-title"
+  >
+    <div class="dashboard-first-use-content">
+      <h2
+        id="dashboard-first-use-title"
+        class="dashboard-first-use-title"
+      >
+        Start learning Morse
+      </h2>
+
+      <p class="dashboard-first-use-description">
+        Your learner profile is ready. Start with the first lesson and EduDit
+        will build your training vocabulary from there.
+      </p>
+    </div>
+
+    <div class="dashboard-first-use-action">
+      <a
+        href="#lessons"
+        class="button button-primary button-large"
+        data-route="lessons"
+      >
+        Start first lesson
+      </a>
+    </div>
+  </section>
+
+  <!-- =======================================================================
+       Core Statistics
+       ======================================================================= -->
+
+  <section
+    class="dashboard-stats"
+    aria-label="Training statistics"
+  >
+    <article class="card dashboard-stat-card">
+      <p class="stat-label">
+        Characters learned
+      </p>
+
+      <p
+        class="stat-value"
+        data-dashboard-stat="characters"
+      >
+        0
+      </p>
+
+      <p
+        class="stat-detail"
+        data-dashboard-stat-detail="characters"
+      >
+        of 26
+      </p>
+    </article>
+
+    <article class="card dashboard-stat-card">
+      <p class="stat-label">
+        Accuracy
+      </p>
+
+      <p
+        class="stat-value"
+        data-dashboard-stat="accuracy"
+      >
+        —
+      </p>
+
+      <p
+        class="stat-detail"
+        data-dashboard-stat-detail="accuracy"
+      >
+        No attempts yet
+      </p>
+    </article>
+
+    <article class="card dashboard-stat-card">
+      <p class="stat-label">
+        Training sessions
+      </p>
+
+      <p
+        class="stat-value"
+        data-dashboard-stat="sessions"
+      >
+        0
+      </p>
+
+      <p
+        class="stat-detail"
+        data-dashboard-stat-detail="sessions"
+      >
+        Keep going
+      </p>
+    </article>
+
+    <article class="card dashboard-stat-card">
+      <p class="stat-label">
+        Current streak
+      </p>
+
+      <p
+        class="stat-value"
+        data-dashboard-stat="streak"
+      >
+        0
+      </p>
+
+      <p
+        class="stat-detail"
+        data-dashboard-stat-detail="streak"
+      >
+        Sessions
+      </p>
+    </article>
+  </section>
+
+  <!-- =======================================================================
+       Main Dashboard Grid
+       ======================================================================= -->
+
+  <div class="dashboard-grid">
+    <!-- =====================================================================
+         Left Column
+         ===================================================================== -->
+
+    <div class="dashboard-column">
+      <!-- Recently Learned -->
+
+      <section
+        class="card"
+        aria-labelledby="recently-learned-title"
+        data-dashboard-recent-section
+      >
+        <header class="section-header">
+          <div>
+            <h2
+              id="recently-learned-title"
+              class="section-title"
+            >
+              Recently learned
+            </h2>
+
+            <p class="section-description">
+              The latest characters added to your vocabulary.
+            </p>
+          </div>
+        </header>
+
+        <div
+          class="recently-learned"
+          data-dashboard-recent
+        ></div>
+      </section>
+
+      <!-- Training Overview -->
+
+      <section
+        class="card"
+        aria-labelledby="training-overview-title"
+      >
+        <header class="section-header">
+          <div>
+            <h2
+              id="training-overview-title"
+              class="section-title"
+            >
+              Training overview
+            </h2>
+
+            <p class="section-description">
+              Your current place in the character curriculum.
+            </p>
+          </div>
+        </header>
+
+        <div class="training-overview">
+          <div class="training-overview-main">
+            <p
+              class="training-overview-value"
+              data-dashboard-progress-value
+            >
+              0%
+            </p>
+
+            <p
+              class="training-overview-label"
+              data-dashboard-progress-label
+            >
+              0 of 26 characters unlocked
+            </p>
+
+            <div class="training-overview-progress">
+              <div
+                class="progress"
+                role="progressbar"
+                aria-label="Character curriculum progress"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0"
+                data-dashboard-progress-bar
+              >
+                <div
+                  class="progress-bar"
+                  data-dashboard-progress-fill
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+
+            <div class="training-overview-detail">
+              <span>Character curriculum</span>
+
+              <span data-dashboard-progress-detail>
+                0 / 26
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <p class="stat-label">
+              Average response
+            </p>
+
+            <p
+              class="stat-value"
+              data-dashboard-stat="response-time"
+            >
+              —
+            </p>
+
+            <p
+              class="stat-detail"
+              data-dashboard-stat-detail="response-time"
+            >
+              No response data yet
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recent Session -->
+
+      <section
+        class="card"
+        aria-labelledby="session-summary-title"
+      >
+        <header class="section-header">
+          <div>
+            <h2
+              id="session-summary-title"
+              class="section-title"
+            >
+              Training summary
+            </h2>
+
+            <p class="section-description">
+              A quick look at your overall training activity.
+            </p>
+          </div>
+
+          <a
+            href="#progress"
+            class="button button-secondary button-small"
+            data-route="progress"
+          >
+            View progress
+          </a>
+        </header>
+
+        <div class="session-summary">
+          <div class="session-summary-item">
+            <p class="stat-label">
+              Attempts
+            </p>
+
+            <p
+              class="stat-value"
+              data-dashboard-stat="attempts"
+            >
+              0
+            </p>
+          </div>
+
+          <div class="session-summary-item">
+            <p class="stat-label">
+              Training time
+            </p>
+
+            <p
+              class="stat-value"
+              data-dashboard-stat="training-time"
+            >
+              0m
+            </p>
+          </div>
+
+          <div class="session-summary-item">
+            <p class="stat-label">
+              Best streak
+            </p>
+
+            <p
+              class="stat-value"
+              data-dashboard-stat="best-streak"
+            >
+              0
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- =====================================================================
+         Right Column
+         ===================================================================== -->
+
+    <div class="dashboard-column">
+      <!-- Weak Characters -->
+
+      <section
+        class="card"
+        aria-labelledby="weak-characters-title"
+        data-dashboard-weak-section
+      >
+        <header class="section-header">
+          <div>
+            <h2
+              id="weak-characters-title"
+              class="section-title"
+            >
+              Needs practice
+            </h2>
+
+            <p class="section-description">
+              Characters receiving extra attention from adaptive training.
+            </p>
+          </div>
+        </header>
+
+        <div
+          class="weak-characters"
+          data-dashboard-weak
+        ></div>
+      </section>
+
+      <!-- Learning Focus -->
+
+      <section
+        class="card"
+        aria-labelledby="learning-focus-title"
+      >
+        <header class="section-header">
+          <div>
+            <h2
+              id="learning-focus-title"
+              class="section-title"
+            >
+              Learning focus
+            </h2>
+
+            <p class="section-description">
+              Your current training configuration.
+            </p>
+          </div>
+        </header>
+
+        <div class="dashboard-focus">
+          <div class="dashboard-focus-item">
+            <p class="stat-label">
+              Pace
+            </p>
+
+            <p
+              class="stat-value"
+              data-dashboard-focus="pace"
+            >
+              Standard
+            </p>
+          </div>
+
+          <div class="dashboard-focus-item">
+            <p class="stat-label">
+              Training mode
+            </p>
+
+            <p
+              class="stat-value"
+              data-dashboard-focus="mode"
+            >
+              Adaptive
+            </p>
+          </div>
+
+          <div class="dashboard-focus-item">
+            <p class="stat-label">
+              Session length
+            </p>
+
+            <p
+              class="stat-value"
+              data-dashboard-focus="session-length"
+            >
+              20
+            </p>
+
+            <p class="stat-detail">
+              attempts
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Links -->
+
+      <section
+        class="card"
+        aria-labelledby="quick-links-title"
+      >
+        <header class="section-header">
+          <div>
+            <h2
+              id="quick-links-title"
+              class="section-title"
+            >
+              Quick access
+            </h2>
+          </div>
+        </header>
+
+        <div class="button-group button-group-stacked">
+          <a
+            href="#lessons"
+            class="button button-secondary"
+            data-route="lessons"
+          >
+            Browse lessons
+          </a>
+
+          <a
+            href="#receive"
+            class="button button-secondary"
+            data-route="receive"
+          >
+            Receive practice
+          </a>
+
+          <a
+            href="#settings"
+            class="button button-secondary"
+            data-route="settings"
+          >
+            Training settings
+          </a>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
