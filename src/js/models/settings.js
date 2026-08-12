@@ -1,14 +1,34 @@
+```javascript
 /**
  * =============================================================================
  * EduDit
  * Settings Model
  * =============================================================================
  *
- * Canonical application and learner settings.
+ * Canonical learner settings model.
  *
- * This model defines the shape and normalization rules for settings.
- * It does not persist settings and does not directly manipulate the UI,
- * audio engine, or theme system.
+ * Settings are deliberately grouped by responsibility:
+ *
+ *   learning   - learning strategy and session configuration
+ *   receive    - Morse receiving/training configuration
+ *   audio      - background audio configuration
+ *   appearance - visual/theme configuration
+ *
+ * This module:
+ *   - defines the canonical settings shape
+ *   - creates safe defaults
+ *   - normalizes persisted/imported settings
+ *   - provides immutable update helpers
+ *   - validates settings
+ *
+ * It does NOT:
+ *   - persist data
+ *   - manipulate the DOM
+ *   - control audio
+ *   - apply themes
+ *
+ * Persistence belongs to the storage/service layer.
+ * UI/audio/theme behavior belongs to their respective systems.
  * =============================================================================
  */
 
@@ -18,37 +38,9 @@
    ============================================================================= */
 
 
-const DEFAULT_SETTINGS = Object.freeze({
-  /* Appearance */
-  theme: "system",
-
-  /* Audio */
-  soundEnabled: true,
-  backgroundAudioEnabled: false,
-  masterVolume: 0.8,
-  toneFrequency: 600,
-
-  /* Training */
-  characterSpeedWpm: 20,
-  effectiveSpeedWpm: 15,
-  farnsworthEnabled: true,
-  farnsworthSpacing: 15,
-
-  /* Learning */
-  learningPace: "standard",
-
-  /* Feedback */
-  showHints: true,
-  showImmediateFeedback: true,
-
-  /* Accessibility */
-  reducedMotion: false,
-
-  /* Interface */
-  showKeyboard: true,
-});
-
-
+/**
+ * Supported application themes.
+ */
 const THEME_OPTIONS = Object.freeze([
   "system",
   "light",
@@ -56,11 +48,75 @@ const THEME_OPTIONS = Object.freeze([
 ]);
 
 
+/**
+ * Supported learning paces.
+ */
 const LEARNING_PACE_OPTIONS = Object.freeze([
   "slow",
   "standard",
   "fast",
 ]);
+
+
+/**
+ * Supported training modes.
+ */
+const TRAINING_MODE_OPTIONS = Object.freeze([
+  "adaptive",
+  "sequential",
+  "custom",
+]);
+
+
+/**
+ * Supported receive response timing modes.
+ */
+const RESPONSE_TIMING_OPTIONS = Object.freeze([
+  "after-audio",
+  "during-audio",
+]);
+
+
+/**
+ * Supported hint behavior modes.
+ */
+const HINT_BEHAVIOR_OPTIONS = Object.freeze([
+  "manual",
+  "automatic",
+  "disabled",
+]);
+
+
+/**
+ * Canonical default settings.
+ *
+ * Keep this structure synchronized with the architectural settings model in
+ * core/state.js.
+ */
+const DEFAULT_SETTINGS = Object.freeze({
+  learning: Object.freeze({
+    learningPace: "standard",
+    trainingMode: "adaptive",
+    sessionLength: 20,
+  }),
+
+  receive: Object.freeze({
+    wpm: 20,
+    toneFrequencyHz: 600,
+    responseTiming: "after-audio",
+    showKeyboard: true,
+    hintBehavior: "manual",
+  }),
+
+  audio: Object.freeze({
+    backgroundNoiseEnabled: false,
+    backgroundVolume: 0.08,
+  }),
+
+  appearance: Object.freeze({
+    theme: "system",
+  }),
+});
 
 
 /* =============================================================================
@@ -69,7 +125,24 @@ const LEARNING_PACE_OPTIONS = Object.freeze([
 
 
 /**
- * Normalize a boolean setting.
+ * Normalize an object.
+ *
+ * @param {*} value
+ * @returns {Object}
+ */
+function normalizeObject(value) {
+  return (
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value)
+  )
+    ? value
+    : {};
+}
+
+
+/**
+ * Normalize a boolean.
  *
  * @param {*} value
  * @param {boolean} fallback
@@ -79,16 +152,14 @@ function normalizeBoolean(
   value,
   fallback,
 ) {
-  if (typeof value === "boolean") {
-    return value;
-  }
-
-  return fallback;
+  return typeof value === "boolean"
+    ? value
+    : fallback;
 }
 
 
 /**
- * Normalize a bounded numeric setting.
+ * Normalize a bounded number.
  *
  * @param {*} value
  * @param {number} fallback
@@ -116,7 +187,7 @@ function normalizeNumber(
 
 
 /**
- * Normalize an integer setting.
+ * Normalize a bounded integer.
  *
  * @param {*} value
  * @param {number} fallback
@@ -144,33 +215,166 @@ function normalizeInteger(
 
 
 /**
- * Normalize theme.
+ * Normalize an enum value.
  *
  * @param {*} value
+ * @param {Array<string>} options
+ * @param {string} fallback
  * @returns {string}
  */
-function normalizeTheme(value) {
-  return THEME_OPTIONS.includes(value)
+function normalizeOption(
+  value,
+  options,
+  fallback,
+) {
+  return options.includes(value)
     ? value
-    : DEFAULT_SETTINGS.theme;
-}
-
-
-/**
- * Normalize learning pace.
- *
- * @param {*} value
- * @returns {string}
- */
-function normalizeLearningPace(value) {
-  return LEARNING_PACE_OPTIONS.includes(value)
-    ? value
-    : DEFAULT_SETTINGS.learningPace;
+    : fallback;
 }
 
 
 /* =============================================================================
-   Factory
+   Group Normalizers
+   ============================================================================= */
+
+
+/**
+ * Normalize learning settings.
+ *
+ * @param {*} value
+ * @returns {Object}
+ */
+function normalizeLearningSettings(value) {
+  const source =
+    normalizeObject(value);
+
+  return {
+    learningPace:
+      normalizeOption(
+        source.learningPace,
+        LEARNING_PACE_OPTIONS,
+        DEFAULT_SETTINGS.learning.learningPace,
+      ),
+
+    trainingMode:
+      normalizeOption(
+        source.trainingMode,
+        TRAINING_MODE_OPTIONS,
+        DEFAULT_SETTINGS.learning.trainingMode,
+      ),
+
+    sessionLength:
+      normalizeInteger(
+        source.sessionLength,
+        DEFAULT_SETTINGS.learning.sessionLength,
+        1,
+        100,
+      ),
+  };
+}
+
+
+/**
+ * Normalize receive settings.
+ *
+ * @param {*} value
+ * @returns {Object}
+ */
+function normalizeReceiveSettings(value) {
+  const source =
+    normalizeObject(value);
+
+  return {
+    wpm:
+      normalizeNumber(
+        source.wpm,
+        DEFAULT_SETTINGS.receive.wpm,
+        5,
+        60,
+      ),
+
+    toneFrequencyHz:
+      normalizeInteger(
+        source.toneFrequencyHz,
+        DEFAULT_SETTINGS.receive.toneFrequencyHz,
+        100,
+        2000,
+      ),
+
+    responseTiming:
+      normalizeOption(
+        source.responseTiming,
+        RESPONSE_TIMING_OPTIONS,
+        DEFAULT_SETTINGS.receive.responseTiming,
+      ),
+
+    showKeyboard:
+      normalizeBoolean(
+        source.showKeyboard,
+        DEFAULT_SETTINGS.receive.showKeyboard,
+      ),
+
+    hintBehavior:
+      normalizeOption(
+        source.hintBehavior,
+        HINT_BEHAVIOR_OPTIONS,
+        DEFAULT_SETTINGS.receive.hintBehavior,
+      ),
+  };
+}
+
+
+/**
+ * Normalize audio settings.
+ *
+ * @param {*} value
+ * @returns {Object}
+ */
+function normalizeAudioSettings(value) {
+  const source =
+    normalizeObject(value);
+
+  return {
+    backgroundNoiseEnabled:
+      normalizeBoolean(
+        source.backgroundNoiseEnabled,
+        DEFAULT_SETTINGS.audio.backgroundNoiseEnabled,
+      ),
+
+    backgroundVolume:
+      normalizeNumber(
+        source.backgroundVolume,
+        DEFAULT_SETTINGS.audio.backgroundVolume,
+        0,
+        1,
+      ),
+  };
+}
+
+
+/**
+ * Normalize appearance settings.
+ *
+ * @param {*} value
+ * @returns {Object}
+ */
+function normalizeAppearanceSettings(value) {
+  const source =
+    normalizeObject(value);
+
+  return {
+    theme:
+      normalizeOption(
+        source.theme,
+        THEME_OPTIONS,
+        DEFAULT_SETTINGS.appearance.theme,
+      ),
+  };
+}
+
+
+/* =============================================================================
+   Factory / Normalization
    ============================================================================= */
 
 
@@ -180,150 +384,57 @@ function normalizeLearningPace(value) {
  * @param {Object} overrides
  * @returns {Object}
  */
-function createSettings(overrides = {}) {
-  return normalizeSettings({
-    ...DEFAULT_SETTINGS,
-    ...overrides,
-  });
+function createSettings(
+  overrides = {},
+) {
+  return normalizeSettings(
+    overrides,
+  );
 }
 
 
 /**
- * Normalize settings into the canonical shape.
+ * Normalize settings into the canonical nested shape.
  *
  * Unknown properties are intentionally discarded.
  *
- * @param {Object|null} settings
+ * @param {*} settings
  * @returns {Object}
  */
 function normalizeSettings(settings) {
   const source =
-    settings &&
-    typeof settings === "object"
-      ? settings
-      : {};
+    normalizeObject(settings);
 
   return {
-    /* Appearance */
-
-    theme:
-      normalizeTheme(
-        source.theme,
+    learning:
+      normalizeLearningSettings(
+        source.learning,
       ),
 
-    /* Audio */
-
-    soundEnabled:
-      normalizeBoolean(
-        source.soundEnabled,
-        DEFAULT_SETTINGS.soundEnabled,
+    receive:
+      normalizeReceiveSettings(
+        source.receive,
       ),
 
-    backgroundAudioEnabled:
-      normalizeBoolean(
-        source.backgroundAudioEnabled,
-        DEFAULT_SETTINGS.backgroundAudioEnabled,
+    audio:
+      normalizeAudioSettings(
+        source.audio,
       ),
 
-    masterVolume:
-      normalizeNumber(
-        source.masterVolume,
-        DEFAULT_SETTINGS.masterVolume,
-        0,
-        1,
-      ),
-
-    toneFrequency:
-      normalizeInteger(
-        source.toneFrequency,
-        DEFAULT_SETTINGS.toneFrequency,
-        100,
-        2000,
-      ),
-
-    /* Training */
-
-    characterSpeedWpm:
-      normalizeNumber(
-        source.characterSpeedWpm,
-        DEFAULT_SETTINGS.characterSpeedWpm,
-        5,
-        60,
-      ),
-
-    effectiveSpeedWpm:
-      normalizeNumber(
-        source.effectiveSpeedWpm,
-        DEFAULT_SETTINGS.effectiveSpeedWpm,
-        5,
-        60,
-      ),
-
-    farnsworthEnabled:
-      normalizeBoolean(
-        source.farnsworthEnabled,
-        DEFAULT_SETTINGS.farnsworthEnabled,
-      ),
-
-    farnsworthSpacing:
-      normalizeNumber(
-        source.farnsworthSpacing,
-        DEFAULT_SETTINGS.farnsworthSpacing,
-        5,
-        60,
-      ),
-
-    /* Learning */
-
-    learningPace:
-      normalizeLearningPace(
-        source.learningPace,
-      ),
-
-    /* Feedback */
-
-    showHints:
-      normalizeBoolean(
-        source.showHints,
-        DEFAULT_SETTINGS.showHints,
-      ),
-
-    showImmediateFeedback:
-      normalizeBoolean(
-        source.showImmediateFeedback,
-        DEFAULT_SETTINGS.showImmediateFeedback,
-      ),
-
-    /* Accessibility */
-
-    reducedMotion:
-      normalizeBoolean(
-        source.reducedMotion,
-        DEFAULT_SETTINGS.reducedMotion,
-      ),
-
-    /* Interface */
-
-    showKeyboard:
-      normalizeBoolean(
-        source.showKeyboard,
-        DEFAULT_SETTINGS.showKeyboard,
+    appearance:
+      normalizeAppearanceSettings(
+        source.appearance,
       ),
   };
 }
 
 
-/* =============================================================================
-   Updates
-   ============================================================================= */
-
-
 /**
- * Return a new settings object with updates applied.
+ * Update settings immutably.
  *
- * The original settings object is never mutated.
+ * Top-level groups are merged rather than replaced.
  *
- * @param {Object|null} settings
+ * @param {*} settings
  * @param {Object} updates
  * @returns {Object}
  */
@@ -334,9 +445,41 @@ function updateSettings(
   const current =
     normalizeSettings(settings);
 
+  const normalizedUpdates =
+    normalizeObject(updates);
+
   return normalizeSettings({
     ...current,
-    ...updates,
+
+    ...normalizedUpdates,
+
+    learning: {
+      ...current.learning,
+      ...normalizeObject(
+        normalizedUpdates.learning,
+      ),
+    },
+
+    receive: {
+      ...current.receive,
+      ...normalizeObject(
+        normalizedUpdates.receive,
+      ),
+    },
+
+    audio: {
+      ...current.audio,
+      ...normalizeObject(
+        normalizedUpdates.audio,
+      ),
+    },
+
+    appearance: {
+      ...current.appearance,
+      ...normalizeObject(
+        normalizedUpdates.appearance,
+      ),
+    },
   });
 }
 
@@ -347,7 +490,94 @@ function updateSettings(
  * @returns {Object}
  */
 function resetSettings() {
-  return createSettings();
+  return createSettings(
+    DEFAULT_SETTINGS,
+  );
+}
+
+
+/* =============================================================================
+   Group Update Helpers
+   ============================================================================= */
+
+
+/**
+ * Update learning settings.
+ *
+ * @param {Object} settings
+ * @param {Object} updates
+ * @returns {Object}
+ */
+function updateLearningSettings(
+  settings,
+  updates = {},
+) {
+  return updateSettings(
+    settings,
+    {
+      learning: updates,
+    },
+  );
+}
+
+
+/**
+ * Update receive settings.
+ *
+ * @param {Object} settings
+ * @param {Object} updates
+ * @returns {Object}
+ */
+function updateReceiveSettings(
+  settings,
+  updates = {},
+) {
+  return updateSettings(
+    settings,
+    {
+      receive: updates,
+    },
+  );
+}
+
+
+/**
+ * Update audio settings.
+ *
+ * @param {Object} settings
+ * @param {Object} updates
+ * @returns {Object}
+ */
+function updateAudioSettings(
+  settings,
+  updates = {},
+) {
+  return updateSettings(
+    settings,
+    {
+      audio: updates,
+    },
+  );
+}
+
+
+/**
+ * Update appearance settings.
+ *
+ * @param {Object} settings
+ * @param {Object} updates
+ * @returns {Object}
+ */
+function updateAppearanceSettings(
+  settings,
+  updates = {},
+) {
+  return updateSettings(
+    settings,
+    {
+      appearance: updates,
+    },
+  );
 }
 
 
@@ -357,7 +587,7 @@ function resetSettings() {
 
 
 /**
- * Set the application theme.
+ * Set application theme.
  *
  * @param {Object} settings
  * @param {string} theme
@@ -367,7 +597,7 @@ function setTheme(
   settings,
   theme,
 ) {
-  return updateSettings(
+  return updateAppearanceSettings(
     settings,
     {
       theme,
@@ -377,7 +607,7 @@ function setTheme(
 
 
 /**
- * Set the learning pace.
+ * Set learning pace.
  *
  * @param {Object} settings
  * @param {string} learningPace
@@ -387,7 +617,7 @@ function setLearningPace(
   settings,
   learningPace,
 ) {
-  return updateSettings(
+  return updateLearningSettings(
     settings,
     {
       learningPace,
@@ -397,60 +627,180 @@ function setLearningPace(
 
 
 /**
- * Set master volume.
+ * Set training mode.
+ *
+ * @param {Object} settings
+ * @param {string} trainingMode
+ * @returns {Object}
+ */
+function setTrainingMode(
+  settings,
+  trainingMode,
+) {
+  return updateLearningSettings(
+    settings,
+    {
+      trainingMode,
+    },
+  );
+}
+
+
+/**
+ * Set session length.
+ *
+ * @param {Object} settings
+ * @param {number} sessionLength
+ * @returns {Object}
+ */
+function setSessionLength(
+  settings,
+  sessionLength,
+) {
+  return updateLearningSettings(
+    settings,
+    {
+      sessionLength,
+    },
+  );
+}
+
+
+/**
+ * Set receive WPM.
+ *
+ * @param {Object} settings
+ * @param {number} wpm
+ * @returns {Object}
+ */
+function setReceiveWpm(
+  settings,
+  wpm,
+) {
+  return updateReceiveSettings(
+    settings,
+    {
+      wpm,
+    },
+  );
+}
+
+
+/**
+ * Set Morse tone frequency.
+ *
+ * @param {Object} settings
+ * @param {number} toneFrequencyHz
+ * @returns {Object}
+ */
+function setToneFrequency(
+  settings,
+  toneFrequencyHz,
+) {
+  return updateReceiveSettings(
+    settings,
+    {
+      toneFrequencyHz,
+    },
+  );
+}
+
+
+/**
+ * Set response timing.
+ *
+ * @param {Object} settings
+ * @param {string} responseTiming
+ * @returns {Object}
+ */
+function setResponseTiming(
+  settings,
+  responseTiming,
+) {
+  return updateReceiveSettings(
+    settings,
+    {
+      responseTiming,
+    },
+  );
+}
+
+
+/**
+ * Set keyboard visibility.
+ *
+ * @param {Object} settings
+ * @param {boolean} showKeyboard
+ * @returns {Object}
+ */
+function setKeyboardVisibility(
+  settings,
+  showKeyboard,
+) {
+  return updateReceiveSettings(
+    settings,
+    {
+      showKeyboard,
+    },
+  );
+}
+
+
+/**
+ * Set hint behavior.
+ *
+ * @param {Object} settings
+ * @param {string} hintBehavior
+ * @returns {Object}
+ */
+function setHintBehavior(
+  settings,
+  hintBehavior,
+) {
+  return updateReceiveSettings(
+    settings,
+    {
+      hintBehavior,
+    },
+  );
+}
+
+
+/**
+ * Set background noise state.
+ *
+ * @param {Object} settings
+ * @param {boolean} enabled
+ * @returns {Object}
+ */
+function setBackgroundNoiseEnabled(
+  settings,
+  enabled,
+) {
+  return updateAudioSettings(
+    settings,
+    {
+      backgroundNoiseEnabled: enabled,
+    },
+  );
+}
+
+
+/**
+ * Set background audio volume.
  *
  * @param {Object} settings
  * @param {number} volume
  * @returns {Object}
  */
-function setMasterVolume(
+function setBackgroundVolume(
   settings,
   volume,
 ) {
-  return updateSettings(
+  return updateAudioSettings(
     settings,
     {
-      masterVolume: volume,
-    },
-  );
-}
-
-
-/**
- * Set Morse character speed.
- *
- * @param {Object} settings
- * @param {number} wpm
- * @returns {Object}
- */
-function setCharacterSpeed(
-  settings,
-  wpm,
-) {
-  return updateSettings(
-    settings,
-    {
-      characterSpeedWpm: wpm,
-    },
-  );
-}
-
-
-/**
- * Set effective Morse speed.
- *
- * @param {Object} settings
- * @param {number} wpm
- * @returns {Object}
- */
-function setEffectiveSpeed(
-  settings,
-  wpm,
-) {
-  return updateSettings(
-    settings,
-    {
-      effectiveSpeedWpm: wpm,
+      backgroundVolume: volume,
     },
   );
 }
@@ -462,89 +812,6 @@ function setEffectiveSpeed(
 
 
 /**
- * Determine whether sound is available to the learner.
- *
- * @param {Object} settings
- * @returns {boolean}
- */
-function isSoundEnabled(settings) {
-  const normalized =
-    normalizeSettings(settings);
-
-  return normalized.soundEnabled;
-}
-
-
-/**
- * Determine whether background audio is enabled.
- *
- * @param {Object} settings
- * @returns {boolean}
- */
-function isBackgroundAudioEnabled(settings) {
-  const normalized =
-    normalizeSettings(settings);
-
-  return (
-    normalized.soundEnabled &&
-    normalized.backgroundAudioEnabled
-  );
-}
-
-
-/**
- * Get the effective master volume.
- *
- * @param {Object} settings
- * @returns {number}
- */
-function getMasterVolume(settings) {
-  return normalizeSettings(
-    settings,
-  ).masterVolume;
-}
-
-
-/**
- * Determine whether hints should be displayed.
- *
- * @param {Object} settings
- * @returns {boolean}
- */
-function areHintsEnabled(settings) {
-  return normalizeSettings(
-    settings,
-  ).showHints;
-}
-
-
-/**
- * Determine whether immediate feedback is enabled.
- *
- * @param {Object} settings
- * @returns {boolean}
- */
-function isImmediateFeedbackEnabled(settings) {
-  return normalizeSettings(
-    settings,
-  ).showImmediateFeedback;
-}
-
-
-/**
- * Determine whether reduced motion is requested.
- *
- * @param {Object} settings
- * @returns {boolean}
- */
-function prefersReducedMotion(settings) {
-  return normalizeSettings(
-    settings,
-  ).reducedMotion;
-}
-
-
-/**
  * Get the configured theme.
  *
  * @param {Object} settings
@@ -553,12 +820,12 @@ function prefersReducedMotion(settings) {
 function getTheme(settings) {
   return normalizeSettings(
     settings,
-  ).theme;
+  ).appearance.theme;
 }
 
 
 /**
- * Get the configured learning pace.
+ * Get the learning pace.
  *
  * @param {Object} settings
  * @returns {string}
@@ -566,7 +833,98 @@ function getTheme(settings) {
 function getLearningPace(settings) {
   return normalizeSettings(
     settings,
-  ).learningPace;
+  ).learning.learningPace;
+}
+
+
+/**
+ * Get the training mode.
+ *
+ * @param {Object} settings
+ * @returns {string}
+ */
+function getTrainingMode(settings) {
+  return normalizeSettings(
+    settings,
+  ).learning.trainingMode;
+}
+
+
+/**
+ * Get the session length.
+ *
+ * @param {Object} settings
+ * @returns {number}
+ */
+function getSessionLength(settings) {
+  return normalizeSettings(
+    settings,
+  ).learning.sessionLength;
+}
+
+
+/**
+ * Get receive WPM.
+ *
+ * @param {Object} settings
+ * @returns {number}
+ */
+function getReceiveWpm(settings) {
+  return normalizeSettings(
+    settings,
+  ).receive.wpm;
+}
+
+
+/**
+ * Get tone frequency.
+ *
+ * @param {Object} settings
+ * @returns {number}
+ */
+function getToneFrequency(settings) {
+  return normalizeSettings(
+    settings,
+  ).receive.toneFrequencyHz;
+}
+
+
+/**
+ * Determine whether the keyboard should be displayed.
+ *
+ * @param {Object} settings
+ * @returns {boolean}
+ */
+function isKeyboardVisible(settings) {
+  return normalizeSettings(
+    settings,
+  ).receive.showKeyboard;
+}
+
+
+/**
+ * Determine whether background noise is enabled.
+ *
+ * @param {Object} settings
+ * @returns {boolean}
+ */
+function isBackgroundNoiseEnabled(settings) {
+  return normalizeSettings(
+    settings,
+  ).audio.backgroundNoiseEnabled;
+}
+
+
+/**
+ * Get background volume.
+ *
+ * @param {Object} settings
+ * @returns {number}
+ */
+function getBackgroundVolume(settings) {
+  return normalizeSettings(
+    settings,
+  ).audio.backgroundVolume;
 }
 
 
@@ -576,17 +934,21 @@ function getLearningPace(settings) {
 
 
 /**
- * Validate a settings object.
+ * Validate settings.
+ *
+ * Validation checks the canonical nested shape rather than silently
+ * normalizing it. This makes malformed persisted data visible to callers.
  *
  * @param {*} settings
- * @returns {Object}
+ * @returns {{valid: boolean, errors: string[]}}
  */
 function validateSettings(settings) {
   const errors = [];
 
   if (
     !settings ||
-    typeof settings !== "object"
+    typeof settings !== "object" ||
+    Array.isArray(settings)
   ) {
     return {
       valid: false,
@@ -596,84 +958,145 @@ function validateSettings(settings) {
     };
   }
 
-  if (
-    !THEME_OPTIONS.includes(
-      settings.theme,
-    )
-  ) {
-    errors.push(
-      "Theme is invalid.",
+  const learning =
+    normalizeObject(
+      settings.learning,
     );
-  }
+
+  const receive =
+    normalizeObject(
+      settings.receive,
+    );
+
+  const audio =
+    normalizeObject(
+      settings.audio,
+    );
+
+  const appearance =
+    normalizeObject(
+      settings.appearance,
+    );
 
   if (
     !LEARNING_PACE_OPTIONS.includes(
-      settings.learningPace,
+      learning.learningPace,
     )
   ) {
     errors.push(
-      "Learning pace is invalid.",
+      "learning.learningPace is invalid.",
     );
   }
 
   if (
-    typeof settings.soundEnabled !==
+    !TRAINING_MODE_OPTIONS.includes(
+      learning.trainingMode,
+    )
+  ) {
+    errors.push(
+      "learning.trainingMode is invalid.",
+    );
+  }
+
+  if (
+    !Number.isInteger(
+      learning.sessionLength,
+    ) ||
+    learning.sessionLength < 1 ||
+    learning.sessionLength > 100
+  ) {
+    errors.push(
+      "learning.sessionLength must be an integer between 1 and 100.",
+    );
+  }
+
+  if (
+    !Number.isFinite(
+      receive.wpm,
+    ) ||
+    receive.wpm < 5 ||
+    receive.wpm > 60
+  ) {
+    errors.push(
+      "receive.wpm must be between 5 and 60.",
+    );
+  }
+
+  if (
+    !Number.isInteger(
+      receive.toneFrequencyHz,
+    ) ||
+    receive.toneFrequencyHz < 100 ||
+    receive.toneFrequencyHz > 2000
+  ) {
+    errors.push(
+      "receive.toneFrequencyHz must be an integer between 100 and 2000.",
+    );
+  }
+
+  if (
+    !RESPONSE_TIMING_OPTIONS.includes(
+      receive.responseTiming,
+    )
+  ) {
+    errors.push(
+      "receive.responseTiming is invalid.",
+    );
+  }
+
+  if (
+    typeof receive.showKeyboard !==
     "boolean"
   ) {
     errors.push(
-      "soundEnabled must be a boolean.",
+      "receive.showKeyboard must be a boolean.",
     );
   }
 
   if (
-    typeof settings.backgroundAudioEnabled !==
+    !HINT_BEHAVIOR_OPTIONS.includes(
+      receive.hintBehavior,
+    )
+  ) {
+    errors.push(
+      "receive.hintBehavior is invalid.",
+    );
+  }
+
+  if (
+    typeof audio.backgroundNoiseEnabled !==
     "boolean"
   ) {
     errors.push(
-      "backgroundAudioEnabled must be a boolean.",
+      "audio.backgroundNoiseEnabled must be a boolean.",
     );
   }
 
   if (
     !Number.isFinite(
-      settings.masterVolume,
+      audio.backgroundVolume,
     ) ||
-    settings.masterVolume < 0 ||
-    settings.masterVolume > 1
+    audio.backgroundVolume < 0 ||
+    audio.backgroundVolume > 1
   ) {
     errors.push(
-      "masterVolume must be between 0 and 1.",
+      "audio.backgroundVolume must be between 0 and 1.",
     );
   }
 
   if (
-    !Number.isFinite(
-      settings.characterSpeedWpm,
-    ) ||
-    settings.characterSpeedWpm < 5 ||
-    settings.characterSpeedWpm > 60
+    !THEME_OPTIONS.includes(
+      appearance.theme,
+    )
   ) {
     errors.push(
-      "characterSpeedWpm must be between 5 and 60.",
-    );
-  }
-
-  if (
-    !Number.isFinite(
-      settings.effectiveSpeedWpm,
-    ) ||
-    settings.effectiveSpeedWpm < 5 ||
-    settings.effectiveSpeedWpm > 60
-  ) {
-    errors.push(
-      "effectiveSpeedWpm must be between 5 and 60.",
+      "appearance.theme is invalid.",
     );
   }
 
   return {
     valid:
       errors.length === 0,
-
     errors,
   };
 }
@@ -686,28 +1109,44 @@ function validateSettings(settings) {
 
 export {
   DEFAULT_SETTINGS,
+
   THEME_OPTIONS,
   LEARNING_PACE_OPTIONS,
+  TRAINING_MODE_OPTIONS,
+  RESPONSE_TIMING_OPTIONS,
+  HINT_BEHAVIOR_OPTIONS,
 
   createSettings,
   normalizeSettings,
   updateSettings,
   resetSettings,
 
+  updateLearningSettings,
+  updateReceiveSettings,
+  updateAudioSettings,
+  updateAppearanceSettings,
+
   setTheme,
   setLearningPace,
-  setMasterVolume,
-  setCharacterSpeed,
-  setEffectiveSpeed,
+  setTrainingMode,
+  setSessionLength,
+  setReceiveWpm,
+  setToneFrequency,
+  setResponseTiming,
+  setKeyboardVisibility,
+  setHintBehavior,
+  setBackgroundNoiseEnabled,
+  setBackgroundVolume,
 
-  isSoundEnabled,
-  isBackgroundAudioEnabled,
-  getMasterVolume,
-  areHintsEnabled,
-  isImmediateFeedbackEnabled,
-  prefersReducedMotion,
   getTheme,
   getLearningPace,
+  getTrainingMode,
+  getSessionLength,
+  getReceiveWpm,
+  getToneFrequency,
+  isKeyboardVisible,
+  isBackgroundNoiseEnabled,
+  getBackgroundVolume,
 
   validateSettings,
 };
@@ -719,18 +1158,33 @@ export default {
   updateSettings,
   resetSettings,
 
+  updateLearningSettings,
+  updateReceiveSettings,
+  updateAudioSettings,
+  updateAppearanceSettings,
+
   setTheme,
   setLearningPace,
-  setMasterVolume,
-  setCharacterSpeed,
-  setEffectiveSpeed,
+  setTrainingMode,
+  setSessionLength,
+  setReceiveWpm,
+  setToneFrequency,
+  setResponseTiming,
+  setKeyboardVisibility,
+  setHintBehavior,
+  setBackgroundNoiseEnabled,
+  setBackgroundVolume,
 
-  isSoundEnabled,
-  isBackgroundAudioEnabled,
-  getMasterVolume,
-  areHintsEnabled,
-  isImmediateFeedbackEnabled,
-  prefersReducedMotion,
   getTheme,
   getLearningPace,
+  getTrainingMode,
+  getSessionLength,
+  getReceiveWpm,
+  getToneFrequency,
+  isKeyboardVisible,
+  isBackgroundNoiseEnabled,
+  getBackgroundVolume,
+
+  validateSettings,
 };
+```
