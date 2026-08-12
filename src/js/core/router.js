@@ -9,26 +9,30 @@
  * - Navigating between application views.
  * - Updating the active navigation state.
  * - Loading view HTML.
- * - Initializing and destroying feature modules.
- * - Preventing stale listeners/timers from surviving navigation.
+ * - Managing feature lifecycle.
+ * - Preventing stale navigation results.
  * - Managing browser history.
+ * - Providing a consistent feature context.
  *
  * The router does NOT:
  *
  * - Contain learning logic.
  * - Manage persistence.
  * - Own application state.
- * - Directly manipulate training algorithms.
+ * - Implement training algorithms.
  *
- * Views are treated as short-lived application modules:
+ * Feature lifecycle
  *
- *   mount()
- *   initialize()
- *   start()
+ *   mount(context)
+ *   initialize(context)
+ *   start(context)
  *   ...
+ *   stop()
  *   destroy()
+ *   unmount()
  *
- * A feature may implement only the lifecycle methods it needs.
+ * A feature only needs to implement the lifecycle methods it actually needs.
+ *
  * =============================================================================
  */
 
@@ -38,12 +42,6 @@ import events, { EVENT_NAMES } from "./events.js";
    Configuration
    ============================================================================= */
 
-/**
- * All valid application routes.
- *
- * Keeping the route registry centralized prevents arbitrary HTML paths from
- * being passed into the router.
- */
 const ROUTES = Object.freeze({
   dashboard: {
     id: "dashboard",
@@ -131,21 +129,10 @@ const ERROR_HTML = `
    Route Helpers
    ============================================================================= */
 
-/**
- * Return a route definition.
- *
- * @param {string} routeId
- * @returns {Object|null}
- */
 function getRoute(routeId) {
   return ROUTES[routeId] ?? null;
 }
 
-/**
- * Return a defensive copy of the route registry.
- *
- * @returns {Object}
- */
 function getRoutes() {
   return Object.fromEntries(
     Object.entries(ROUTES).map(([key, route]) => [
@@ -155,29 +142,13 @@ function getRoutes() {
   );
 }
 
-/**
- * Determine whether a route exists.
- *
- * @param {string} routeId
- * @returns {boolean}
- */
 function isValidRoute(routeId) {
-  return typeof routeId === "string" && Boolean(ROUTES[routeId]);
+  return (
+    typeof routeId === "string" &&
+    Boolean(ROUTES[routeId])
+  );
 }
 
-/**
- * Convert a route URL into an application route.
- *
- * Supports:
- *
- *   #dashboard
- *   #lessons
- *   #receive
- *   #receive?mode=adaptive
- *
- * @param {string} hash
- * @returns {{routeId: string, query: URLSearchParams}}
- */
 function parseHash(hash) {
   const cleanHash = String(hash ?? "")
     .replace(/^#/, "")
@@ -190,8 +161,23 @@ function parseHash(hash) {
     };
   }
 
-  const [routePart, queryString = ""] =
-    cleanHash.split("?");
+  const questionMarkIndex =
+    cleanHash.indexOf("?");
+
+  const routePart =
+    questionMarkIndex === -1
+      ? cleanHash
+      : cleanHash.slice(
+          0,
+          questionMarkIndex,
+        );
+
+  const queryString =
+    questionMarkIndex === -1
+      ? ""
+      : cleanHash.slice(
+          questionMarkIndex + 1,
+        );
 
   const routeId = routePart.trim();
 
@@ -199,18 +185,17 @@ function parseHash(hash) {
     routeId: isValidRoute(routeId)
       ? routeId
       : DEFAULT_ROUTE,
-    query: new URLSearchParams(queryString),
+
+    query: new URLSearchParams(
+      queryString,
+    ),
   };
 }
 
-/**
- * Build a hash for a route.
- *
- * @param {string} routeId
- * @param {Object|URLSearchParams} query
- * @returns {string}
- */
-function buildHash(routeId, query = {}) {
+function buildHash(
+  routeId,
+  query = {},
+) {
   if (!isValidRoute(routeId)) {
     throw new Error(
       `Cannot build hash for unknown route "${routeId}".`,
@@ -219,10 +204,11 @@ function buildHash(routeId, query = {}) {
 
   const params =
     query instanceof URLSearchParams
-      ? query
+      ? new URLSearchParams(query)
       : new URLSearchParams(query);
 
-  const queryString = params.toString();
+  const queryString =
+    params.toString();
 
   return queryString
     ? `#${routeId}?${queryString}`
@@ -233,17 +219,6 @@ function buildHash(routeId, query = {}) {
    Feature Registry
    ============================================================================= */
 
-/**
- * Features register themselves with the router.
- *
- * Example:
- *
- * router.registerFeature("receive", receiveFeature);
- *
- * The router intentionally does not import every feature itself. This avoids
- * creating a large dependency graph where every feature becomes coupled to
- * every other feature.
- */
 class FeatureRegistry {
   #features = new Map();
 
@@ -257,9 +232,15 @@ class FeatureRegistry {
       );
     }
 
-    if (!feature || typeof feature !== "object") {
+    if (
+      !feature ||
+      (
+        typeof feature !== "object" &&
+        typeof feature !== "function"
+      )
+    ) {
       throw new TypeError(
-        `Feature "${name}" must be an object.`,
+        `Feature "${name}" must be an object or function.`,
       );
     }
 
@@ -269,11 +250,17 @@ class FeatureRegistry {
       );
     }
 
-    this.#features.set(name, feature);
+    this.#features.set(
+      name,
+      feature,
+    );
   }
 
   get(name) {
-    return this.#features.get(name) ?? null;
+    return (
+      this.#features.get(name) ??
+      null
+    );
   }
 
   has(name) {
@@ -282,6 +269,10 @@ class FeatureRegistry {
 
   unregister(name) {
     this.#features.delete(name);
+  }
+
+  clear() {
+    this.#features.clear();
   }
 }
 
@@ -292,11 +283,14 @@ class FeatureRegistry {
 class Router {
   #container = null;
 
-  #featureRegistry = new FeatureRegistry();
+  #featureRegistry =
+    new FeatureRegistry();
 
   #currentRoute = null;
 
   #currentFeature = null;
+
+  #currentFeatureCleanup = null;
 
   #currentViewElement = null;
 
@@ -310,12 +304,10 @@ class Router {
 
   #boundRetry = null;
 
-  /**
-   * Initialize the router.
-   *
-   * @param {Object} options
-   * @param {string} [options.containerSelector]
-   */
+  /* ===========================================================================
+     Initialization
+     =========================================================================== */
+
   initialize(options = {}) {
     if (this.#initialized) {
       return;
@@ -326,7 +318,9 @@ class Router {
       VIEW_CONTAINER_SELECTOR;
 
     this.#container =
-      document.querySelector(containerSelector);
+      document.querySelector(
+        containerSelector,
+      );
 
     if (!this.#container) {
       throw new Error(
@@ -353,27 +347,36 @@ class Router {
     this.#initialized = true;
   }
 
-  /**
-   * Register a feature module.
-   *
-   * @param {string} name
-   * @param {Object} feature
-   */
-  registerFeature(name, feature) {
+  /* ===========================================================================
+     Feature Registration
+     =========================================================================== */
+
+  registerFeature(
+    name,
+    feature,
+  ) {
     this.#featureRegistry.register(
       name,
       feature,
     );
   }
 
-  /**
-   * Navigate to a route.
-   *
-   * @param {string} routeId
-   * @param {Object|URLSearchParams} [query]
-   * @param {Object} [options]
-   * @param {boolean} [options.replace=false]
-   */
+  unregisterFeature(name) {
+    this.#featureRegistry.unregister(
+      name,
+    );
+  }
+
+  hasFeature(name) {
+    return this.#featureRegistry.has(
+      name,
+    );
+  }
+
+  /* ===========================================================================
+     Navigation
+     =========================================================================== */
+
   async navigate(
     routeId,
     query = {},
@@ -381,38 +384,38 @@ class Router {
   ) {
     this.#requireInitialized();
 
-    if (!isValidRoute(routeId)) {
+    let targetRouteId = routeId;
+
+    if (!isValidRoute(targetRouteId)) {
       console.warn(
-        `[EduDit] Unknown route "${routeId}". Falling back to "${DEFAULT_ROUTE}".`,
+        `[EduDit] Unknown route "${targetRouteId}". Falling back to "${DEFAULT_ROUTE}".`,
       );
 
-      routeId = DEFAULT_ROUTE;
+      targetRouteId =
+        DEFAULT_ROUTE;
     }
 
     const {
       replace = false,
     } = options;
 
+    const params =
+      query instanceof URLSearchParams
+        ? new URLSearchParams(query)
+        : new URLSearchParams(query);
+
     const hash = buildHash(
-      routeId,
-      query,
+      targetRouteId,
+      params,
     );
 
     const currentHash =
       window.location.hash;
 
     if (currentHash === hash) {
-      /*
-       * The hash will not fire hashchange if it is already identical, so
-       * explicitly perform navigation.
-       */
       await this.#performNavigation(
-        routeId,
-        new URLSearchParams(
-          query instanceof URLSearchParams
-            ? query
-            : new URLSearchParams(query),
-        ),
+        targetRouteId,
+        params,
       );
 
       return;
@@ -426,12 +429,8 @@ class Router {
       );
 
       await this.#performNavigation(
-        routeId,
-        new URLSearchParams(
-          query instanceof URLSearchParams
-            ? query
-            : new URLSearchParams(query),
-        ),
+        targetRouteId,
+        params,
       );
 
       return;
@@ -440,24 +439,39 @@ class Router {
     window.location.hash = hash;
   }
 
-  /**
-   * Navigate using a route name while preserving existing query parameters.
-   *
-   * @param {string} routeId
-   */
-  async replace(routeId) {
+  async replace(
+    routeId,
+    query = {},
+  ) {
     await this.navigate(
       routeId,
-      {},
-      { replace: true },
+      query,
+      {
+        replace: true,
+      },
     );
   }
 
-  /**
-   * Return the currently active route.
-   *
-   * @returns {Object|null}
-   */
+  async start() {
+    this.#requireInitialized();
+
+    const {
+      routeId,
+      query,
+    } = parseHash(
+      window.location.hash,
+    );
+
+    await this.#performNavigation(
+      routeId,
+      query,
+    );
+  }
+
+  /* ===========================================================================
+     Current State
+     =========================================================================== */
+
   getCurrentRoute() {
     if (!this.#currentRoute) {
       return null;
@@ -465,41 +479,35 @@ class Router {
 
     return {
       ...this.#currentRoute,
-      query: new URLSearchParams(
-        this.#currentRoute.query,
-      ),
+
+      query:
+        new URLSearchParams(
+          this.#currentRoute.query,
+        ),
     };
   }
 
-  /**
-   * Return the active route ID.
-   *
-   * @returns {string|null}
-   */
   getCurrentRouteId() {
-    return this.#currentRoute?.id ?? null;
+    return (
+      this.#currentRoute?.id ??
+      null
+    );
   }
 
-  /**
-   * Return the active view element.
-   *
-   * @returns {HTMLElement|null}
-   */
   getCurrentViewElement() {
     return this.#currentViewElement;
   }
 
-  /**
-   * Return whether a navigation is currently in progress.
-   *
-   * @returns {boolean}
-   */
+  getCurrentFeature() {
+    return this.#currentFeature;
+  }
+
   isNavigating() {
     return this.#isNavigating;
   }
 
   /* ===========================================================================
-     Internal Navigation
+     Hash Handling
      =========================================================================== */
 
   async #handleHashChange() {
@@ -516,37 +524,40 @@ class Router {
     );
   }
 
+  /* ===========================================================================
+     Navigation Pipeline
+     =========================================================================== */
+
   async #performNavigation(
     routeId,
     query,
   ) {
-    const route = getRoute(routeId);
+    const route =
+      getRoute(routeId);
 
     if (!route) {
       return;
     }
 
-    /*
-     * Each navigation receives a unique token.
-     *
-     * If navigation A begins, then navigation B begins before A finishes, A's
-     * result must not overwrite B's view.
-     */
     const navigationToken =
       ++this.#navigationToken;
 
     this.#isNavigating = true;
 
-    this.#setNavigationState(true);
+    this.#setNavigationState(
+      true,
+    );
 
     events.emit(
       EVENT_NAMES.ROUTE_BEFORE_CHANGE,
       {
         from: this.#currentRoute
           ? {
-              id: this.#currentRoute.id,
+              id:
+                this.#currentRoute.id,
             }
           : null,
+
         to: {
           id: route.id,
         },
@@ -566,7 +577,9 @@ class Router {
       this.#showLoading();
 
       const html =
-        await this.#loadViewHtml(route);
+        await this.#loadViewHtml(
+          route,
+        );
 
       if (
         navigationToken !==
@@ -575,17 +588,25 @@ class Router {
         return;
       }
 
-      this.#container.innerHTML = html;
+      this.#container.innerHTML =
+        html;
 
       this.#currentViewElement =
-        this.#container.firstElementChild;
+        this.#container
+          .firstElementChild;
 
       this.#currentRoute = {
         ...route,
-        query,
+
+        query:
+          new URLSearchParams(
+            query,
+          ),
       };
 
-      this.#updateNavigationUI(route.id);
+      this.#updateNavigationUI(
+        route.id,
+      );
 
       await this.#initializeCurrentFeature(
         route,
@@ -602,7 +623,8 @@ class Router {
       events.emit(
         EVENT_NAMES.ROUTE_CHANGED,
         {
-          route: this.getCurrentRoute(),
+          route:
+            this.getCurrentRoute(),
         },
       );
     } catch (error) {
@@ -625,8 +647,13 @@ class Router {
         {
           route: {
             ...route,
-            query,
+
+            query:
+              new URLSearchParams(
+                query,
+              ),
           },
+
           error,
         },
       );
@@ -635,9 +662,12 @@ class Router {
         navigationToken ===
         this.#navigationToken
       ) {
-        this.#isNavigating = false;
+        this.#isNavigating =
+          false;
 
-        this.#setNavigationState(false);
+        this.#setNavigationState(
+          false,
+        );
       }
     }
   }
@@ -666,14 +696,16 @@ class Router {
     this.#container.innerHTML =
       LOADING_HTML;
 
-    this.#currentViewElement = null;
+    this.#currentViewElement =
+      null;
   }
 
   #showError() {
     this.#container.innerHTML =
       ERROR_HTML;
 
-    this.#currentViewElement = null;
+    this.#currentViewElement =
+      null;
   }
 
   /* ===========================================================================
@@ -689,23 +721,27 @@ class Router {
         route.feature,
       );
 
-    /*
-     * A view is allowed to exist without a feature module.
-     *
-     * This is useful during development and for intentionally static views.
-     */
     if (!feature) {
-      this.#currentFeature = null;
+      this.#currentFeature =
+        null;
+
+      this.#currentFeatureCleanup =
+        null;
 
       return;
     }
 
-    this.#currentFeature = feature;
+    this.#currentFeature =
+      feature;
 
     const context = {
       route: {
         ...route,
-        query,
+
+        query:
+          new URLSearchParams(
+            query,
+          ),
       },
 
       router: this,
@@ -713,7 +749,13 @@ class Router {
       element:
         this.#currentViewElement,
 
-      query,
+      container:
+        this.#container,
+
+      query:
+        new URLSearchParams(
+          query,
+        ),
 
       navigate: (
         destination,
@@ -725,31 +767,112 @@ class Router {
           destinationQuery,
           options,
         ),
+
+      replace: (
+        destination,
+        destinationQuery = {},
+      ) =>
+        this.replace(
+          destination,
+          destinationQuery,
+        ),
     };
 
-    /*
-     * Lifecycle is intentionally defensive.
-     *
-     * A feature only needs to implement the methods it actually needs.
-     */
+    let lifecycleResult =
+      null;
 
+    /*
+     * Preferred lifecycle:
+     *
+     * mount(context)
+     */
     if (
-      typeof feature.mount === "function"
+      typeof feature.mount ===
+      "function"
     ) {
-      await feature.mount(context);
+      lifecycleResult =
+        await feature.mount(
+          context,
+        );
     }
 
+    /*
+     * Secondary lifecycle:
+     *
+     * initialize(context)
+     */
     if (
       typeof feature.initialize ===
       "function"
     ) {
-      await feature.initialize(context);
+      await feature.initialize(
+        context,
+      );
     }
 
+    /*
+     * Compatibility lifecycle:
+     *
+     * init(context)
+     *
+     * Some of our existing feature modules were written with init/destroy
+     * semantics before the router contract was standardized.
+     */
     if (
-      typeof feature.start === "function"
+      typeof feature.init ===
+      "function" &&
+      typeof feature.mount !==
+        "function"
     ) {
-      await feature.start(context);
+      lifecycleResult =
+        await feature.init(
+          context,
+        );
+    }
+
+    /*
+     * Optional active lifecycle.
+     *
+     * This is especially useful for training modules that should not begin
+     * timers/audio/session activity until the view has completely mounted.
+     */
+    if (
+      typeof feature.start ===
+      "function"
+    ) {
+      await feature.start(
+        context,
+      );
+    }
+
+    /*
+     * A feature may return a cleanup function from mount/init.
+     */
+    if (
+      typeof lifecycleResult ===
+      "function"
+    ) {
+      this.#currentFeatureCleanup =
+        lifecycleResult;
+
+      return;
+    }
+
+    /*
+     * Or it may return an object containing an unmount callback.
+     */
+    if (
+      lifecycleResult &&
+      typeof lifecycleResult ===
+        "object"
+    ) {
+      if (
+        typeof lifecycleResult.unmount ===
+        "function"
+      ) {
+        this.#currentFeatureCleanup =
+          lifecycleResult.unmount;
+      }
     }
   }
 
@@ -757,37 +880,69 @@ class Router {
     const feature =
       this.#currentFeature;
 
-    if (!feature) {
+    const cleanup =
+      this.#currentFeatureCleanup;
+
+    if (
+      !feature &&
+      !cleanup
+    ) {
       return;
     }
 
-    /*
-     * Stop is separate from destroy.
-     *
-     * Training features can use stop() to terminate active sessions/audio,
-     * while destroy() removes event listeners and releases references.
-     */
-
     try {
+      /*
+       * First stop active work.
+       *
+       * Training features can use stop() to halt timers, audio, and active
+       * sessions before their DOM is removed.
+       */
       if (
+        feature &&
         typeof feature.stop ===
-        "function"
+          "function"
       ) {
         await feature.stop();
       }
 
+      /*
+       * Then run cleanup returned by mount/init.
+       */
       if (
-        typeof feature.destroy ===
+        typeof cleanup ===
         "function"
+      ) {
+        await cleanup();
+      }
+
+      /*
+       * Destroy is the primary permanent cleanup lifecycle.
+       */
+      if (
+        feature &&
+        typeof feature.destroy ===
+          "function"
       ) {
         await feature.destroy();
       }
-    } catch (error) {
+
       /*
-       * Cleanup errors should not prevent navigation forever.
+       * Unmount is supported for components that prefer a mount/unmount
+       * lifecycle.
        *
-       * We report them, then continue with the new route.
+       * Do not call unmount if the returned cleanup function already came from
+       * the feature's mount lifecycle and is therefore the unmount operation.
        */
+      if (
+        feature &&
+        typeof feature.unmount ===
+          "function" &&
+        cleanup !==
+          feature.unmount
+      ) {
+        await feature.unmount();
+      }
+    } catch (error) {
       console.error(
         "[EduDit] Feature cleanup failed.",
         error,
@@ -801,8 +956,14 @@ class Router {
         },
       );
     } finally {
-      this.#currentFeature = null;
-      this.#currentViewElement = null;
+      this.#currentFeature =
+        null;
+
+      this.#currentFeatureCleanup =
+        null;
+
+      this.#currentViewElement =
+        null;
     }
   }
 
@@ -810,7 +971,9 @@ class Router {
      Navigation UI
      =========================================================================== */
 
-  #updateNavigationUI(activeRouteId) {
+  #updateNavigationUI(
+    activeRouteId,
+  ) {
     document
       .querySelectorAll(
         "[data-route]",
@@ -820,7 +983,8 @@ class Router {
           element.dataset.route;
 
         const isActive =
-          route === activeRouteId;
+          route ===
+          activeRouteId;
 
         element.classList.toggle(
           "is-active",
@@ -840,7 +1004,9 @@ class Router {
       });
   }
 
-  #setNavigationState(isNavigating) {
+  #setNavigationState(
+    isNavigating,
+  ) {
     document.body.classList.toggle(
       "is-navigating",
       isNavigating,
@@ -859,8 +1025,19 @@ class Router {
      =========================================================================== */
 
   async #handleRetry(event) {
+    const target =
+      event.target;
+
+    if (
+      !target ||
+      typeof target.closest !==
+        "function"
+    ) {
+      return;
+    }
+
     const retryButton =
-      event.target.closest(
+      target.closest(
         "[data-router-retry]",
       );
 
@@ -894,15 +1071,14 @@ class Router {
      Cleanup
      =========================================================================== */
 
-  /**
-   * Destroy the router.
-   *
-   * Normally called only when the renderer itself is shutting down.
-   */
   async destroy() {
+    ++this.#navigationToken;
+
     await this.#destroyCurrentFeature();
 
-    if (this.#boundHashChange) {
+    if (
+      this.#boundHashChange
+    ) {
       window.removeEventListener(
         "hashchange",
         this.#boundHashChange,
@@ -919,11 +1095,32 @@ class Router {
       );
     }
 
-    this.#boundHashChange = null;
-    this.#boundRetry = null;
-    this.#container = null;
-    this.#currentRoute = null;
-    this.#initialized = false;
+    this.#boundHashChange =
+      null;
+
+    this.#boundRetry =
+      null;
+
+    this.#container =
+      null;
+
+    this.#currentRoute =
+      null;
+
+    this.#currentFeature =
+      null;
+
+    this.#currentFeatureCleanup =
+      null;
+
+    this.#currentViewElement =
+      null;
+
+    this.#isNavigating =
+      false;
+
+    this.#initialized =
+      false;
   }
 
   /* ===========================================================================
@@ -943,7 +1140,8 @@ class Router {
    Singleton
    ============================================================================= */
 
-const router = new Router();
+const router =
+  new Router();
 
 /* =============================================================================
    Exports
