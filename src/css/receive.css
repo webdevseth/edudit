@@ -1,0 +1,810 @@
+/**
+ * =============================================================================
+ * EduDit
+ * Receive Training
+ * =============================================================================
+ *
+ * Presentation for the primary Morse listening/recognition experience.
+ *
+ * Training logic, timing, evaluation, and adaptive selection do not belong
+ * in this stylesheet.
+ * =============================================================================
+ */
+
+/* =============================================================================
+   Receive Layout
+   ============================================================================= */
+
+.receive {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+
+  min-height: 100%;
+}
+
+/* =============================================================================
+   Training Header
+   ============================================================================= */
+
+.receive-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.receive-header-content {
+  min-width: 0;
+}
+
+.receive-mode {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  margin-bottom: var(--space-2);
+
+  color: var(--color-accent-text);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.receive-mode-indicator {
+  width: 0.5rem;
+  height: 0.5rem;
+
+  background: var(--color-accent);
+
+  border-radius: var(--radius-full);
+}
+
+.receive-title {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+}
+
+.receive-description {
+  max-width: 58ch;
+
+  margin-top: var(--space-2);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.receive-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  flex: 0 0 auto;
+}
+
+/* =============================================================================
+   Session Progress
+   ============================================================================= */
+
+.receive-session-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.receive-session-progress-bar {
+  flex: 1 1 auto;
+}
+
+.receive-session-progress-label {
+  flex: 0 0 auto;
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+/* =============================================================================
+   Training Stage
+   ============================================================================= */
+
+.receive-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  max-width: 54rem;
+
+  margin-inline: auto;
+
+  padding: var(--space-8);
+
+  background: var(--color-surface);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-xl);
+
+  box-shadow: var(--shadow-card);
+}
+
+/* =============================================================================
+   Listening State
+   ============================================================================= */
+
+.receive-listening {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+
+  text-align: center;
+}
+
+.receive-listening-label {
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.receive-listening-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  margin-top: var(--space-3);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+}
+
+.receive-audio-indicator {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.2rem;
+
+  width: 2rem;
+  height: 1.25rem;
+}
+
+.receive-audio-bar {
+  width: 0.2rem;
+
+  background: var(--color-accent);
+
+  border-radius: var(--radius-full);
+
+  animation: receive-audio-pulse 0.9s ease-in-out infinite alternate;
+}
+
+.receive-audio-bar:nth-child(1) {
+  height: 0.35rem;
+  animation-delay: -0.3s;
+}
+
+.receive-audio-bar:nth-child(2) {
+  height: 0.8rem;
+  animation-delay: -0.15s;
+}
+
+.receive-audio-bar:nth-child(3) {
+  height: 1.15rem;
+}
+
+.receive-audio-bar:nth-child(4) {
+  height: 0.65rem;
+  animation-delay: -0.2s;
+}
+
+@keyframes receive-audio-pulse {
+  from {
+    opacity: 0.35;
+    transform: scaleY(0.7);
+  }
+
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+/* =============================================================================
+   Answer Area
+   ============================================================================= */
+
+.receive-answer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+
+  margin-top: var(--space-8);
+}
+
+.receive-answer-prompt {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  text-align: center;
+}
+
+.receive-answer-instruction {
+  margin-top: var(--space-2);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.receive-answer-form {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-2);
+
+  width: 100%;
+  max-width: 28rem;
+
+  margin-top: var(--space-5);
+}
+
+.receive-answer-input {
+  flex: 1 1 auto;
+
+  min-width: 0;
+
+  min-height: 3.25rem;
+
+  padding-inline: var(--space-4);
+
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-medium);
+
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.receive-answer-submit {
+  min-width: 7rem;
+  min-height: 3.25rem;
+}
+
+/* =============================================================================
+   Replay Controls
+   ============================================================================= */
+
+.receive-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+
+  margin-top: var(--space-5);
+}
+
+.receive-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+
+  min-height: 2.25rem;
+
+  padding: var(--space-2) var(--space-3);
+
+  color: var(--color-text-secondary);
+  background: transparent;
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+
+  cursor: pointer;
+
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.receive-control:hover:not(:disabled) {
+  color: var(--color-text-primary);
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-strong);
+}
+
+.receive-control:disabled {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+/* =============================================================================
+   Hint
+   ============================================================================= */
+
+.receive-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+
+  border-top: var(--border-width-thin) solid var(--color-border);
+}
+
+.receive-hint-button {
+  color: var(--color-text-secondary);
+}
+
+.receive-hint-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 3rem;
+
+  margin-top: var(--space-3);
+}
+
+.receive-hint-morse {
+  color: var(--color-text-primary);
+
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+}
+
+/*
+ * The MVP hint deliberately uses a simple reveal treatment.
+ * Audio-synchronized dot/dash animation is a later enhancement.
+ */
+
+.receive-hint-visible .receive-hint-morse {
+  animation: receive-hint-reveal var(--duration-normal) var(--ease-standard);
+}
+
+@keyframes receive-hint-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(0.25rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =============================================================================
+   Answer Feedback
+   ============================================================================= */
+
+.receive-feedback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+
+  border-top: var(--border-width-thin) solid var(--color-border);
+
+  text-align: center;
+}
+
+.receive-feedback-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.receive-feedback-correct {
+  color: var(--color-success-text);
+}
+
+.receive-feedback-incorrect {
+  color: var(--color-danger-text);
+}
+
+.receive-feedback-detail {
+  margin-top: var(--space-2);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+}
+
+.receive-feedback-answer {
+  margin-top: var(--space-3);
+
+  color: var(--color-text-primary);
+
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.receive-feedback-morse {
+  margin-top: var(--space-1);
+
+  color: var(--color-text-tertiary);
+
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.1em;
+}
+
+/* =============================================================================
+   Next Prompt
+   ============================================================================= */
+
+.receive-next {
+  margin-top: var(--space-5);
+}
+
+/* =============================================================================
+   Session Stats
+   ============================================================================= */
+
+.receive-session-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  width: 100%;
+  max-width: 54rem;
+
+  margin-inline: auto;
+}
+
+.receive-session-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: var(--space-4);
+
+  text-align: center;
+}
+
+.receive-session-stat + .receive-session-stat {
+  border-left: var(--border-width-thin) solid var(--color-border);
+}
+
+.receive-session-stat-label {
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+}
+
+.receive-session-stat-value {
+  margin-top: var(--space-1);
+
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+
+  font-variant-numeric: tabular-nums;
+}
+
+/* =============================================================================
+   Training Keyboard
+   ============================================================================= */
+
+.receive-keyboard {
+  width: 100%;
+  max-width: 54rem;
+
+  margin-inline: auto;
+  margin-top: var(--space-2);
+}
+
+.receive-keyboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+
+  margin-bottom: var(--space-3);
+}
+
+.receive-keyboard-title {
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.receive-keyboard-description {
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+}
+
+/*
+ * IMPORTANT:
+ * These keys are purely contextual.
+ * The active answer must NEVER be visually indicated here.
+ */
+
+.training-keyboard {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(2rem, 1fr));
+  gap: var(--space-2);
+}
+
+.training-key {
+  display: grid;
+  place-items: center;
+
+  min-height: 2.75rem;
+
+  color: var(--color-text-tertiary);
+  background: var(--color-surface-subtle);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+
+  user-select: none;
+
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.training-key-known {
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+}
+
+.training-key-unknown {
+  color: var(--color-text-tertiary);
+  opacity: 0.45;
+}
+
+.training-key:hover {
+  border-color: var(--color-border-strong);
+}
+
+/* =============================================================================
+   Session Completion
+   ============================================================================= */
+
+.receive-complete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  max-width: 42rem;
+
+  margin-inline: auto;
+  padding: var(--space-8);
+
+  text-align: center;
+}
+
+.receive-complete-icon {
+  display: grid;
+  place-items: center;
+
+  width: 4rem;
+  height: 4rem;
+
+  color: var(--color-success-text);
+  background: var(--color-success-soft);
+
+  border: var(--border-width-thin) solid var(--color-success-border);
+  border-radius: var(--radius-full);
+
+  font-size: var(--font-size-xl);
+}
+
+.receive-complete-title {
+  margin-top: var(--space-5);
+
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+}
+
+.receive-complete-description {
+  max-width: 48ch;
+
+  margin-top: var(--space-2);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.receive-complete-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  width: 100%;
+
+  margin-top: var(--space-6);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  overflow: hidden;
+}
+
+.receive-complete-stat {
+  padding: var(--space-4);
+}
+
+.receive-complete-stat + .receive-complete-stat {
+  border-left: var(--border-width-thin) solid var(--color-border);
+}
+
+.receive-complete-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+
+  margin-top: var(--space-6);
+}
+
+/* =============================================================================
+   Receive Error State
+   ============================================================================= */
+
+.receive-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  max-width: 40rem;
+
+  margin-inline: auto;
+  padding: var(--space-8);
+
+  text-align: center;
+}
+
+.receive-error-title {
+  color: var(--color-danger-text);
+
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.receive-error-description {
+  margin-top: var(--space-2);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.receive-error-action {
+  margin-top: var(--space-5);
+}
+
+/* =============================================================================
+   Responsive Receive
+   ============================================================================= */
+
+@media (max-width: 800px) {
+  .receive-header {
+    flex-direction: column;
+  }
+
+  .receive-header-actions {
+    width: 100%;
+  }
+
+  .receive-header-actions .button {
+    flex: 1 1 auto;
+  }
+
+  .receive-stage {
+    padding: var(--space-6);
+  }
+
+  .training-keyboard {
+    grid-template-columns: repeat(7, minmax(2rem, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .receive-stage {
+    padding: var(--space-4);
+  }
+
+  .receive-title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .receive-answer-form {
+    flex-direction: column;
+  }
+
+  .receive-answer-submit {
+    width: 100%;
+  }
+
+  .receive-session-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .receive-session-stat + .receive-session-stat {
+    border-top: var(--border-width-thin) solid var(--color-border);
+    border-left: 0;
+  }
+
+  .receive-complete {
+    padding: var(--space-5);
+  }
+
+  .receive-complete-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .receive-complete-stat + .receive-complete-stat {
+    border-top: var(--border-width-thin) solid var(--color-border);
+    border-left: 0;
+  }
+
+  .training-keyboard {
+    grid-template-columns: repeat(5, minmax(2rem, 1fr));
+    gap: var(--space-1);
+  }
+
+  .training-key {
+    min-height: 2.5rem;
+  }
+}
+
+/* =============================================================================
+   Reduced Motion
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .receive-audio-bar {
+    animation: none;
+  }
+
+  .receive-hint-visible .receive-hint-morse {
+    animation: none;
+  }
+}

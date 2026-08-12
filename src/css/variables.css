@@ -1,0 +1,430 @@
+/**
+ * =============================================================================
+ * EduDit
+ * Design Variables
+ * =============================================================================
+ *
+ * Single source of truth for the application's visual design system.
+ *
+ * Components should consume these variables rather than defining their own
+ * colors, spacing, typography, or motion values.
+ *
+ * Theme-specific values are controlled through [data-theme].
+ * =============================================================================
+ */
+
+/* =============================================================================
+   Root / Shared Variables
+   ============================================================================= */
+
+:root {
+  /* ------------------------------------------------------------------------- */
+  /* Typography                                                               */
+  /* ------------------------------------------------------------------------- */
+
+  --font-family-sans:
+    Inter,
+    ui-sans-serif,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  --font-family-mono:
+    "SFMono-Regular",
+    Consolas,
+    "Liberation Mono",
+    Menlo,
+    monospace;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.375rem;
+  --font-size-2xl: 1.75rem;
+  --font-size-3xl: 2.25rem;
+  --font-size-4xl: 3rem;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.15;
+  --line-height-snug: 1.3;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.65;
+
+  /* ------------------------------------------------------------------------- */
+  /* Spacing                                                                   */
+  /* ------------------------------------------------------------------------- */
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* ------------------------------------------------------------------------- */
+  /* Layout                                                                     */
+  /* ------------------------------------------------------------------------- */
+
+  --sidebar-width: 15.5rem;
+  --content-max-width: 88rem;
+  --content-padding-x: clamp(1.25rem, 3vw, 3rem);
+  --content-padding-y: clamp(1.5rem, 3vw, 3rem);
+
+  /* ------------------------------------------------------------------------- */
+  /* Border Radius                                                             */
+  /* ------------------------------------------------------------------------- */
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.125rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* ------------------------------------------------------------------------- */
+  /* Borders                                                                    */
+  /* ------------------------------------------------------------------------- */
+
+  --border-width-thin: 1px;
+  --border-width-medium: 2px;
+
+  /* ------------------------------------------------------------------------- */
+  /* Motion                                                                     */
+  /* ------------------------------------------------------------------------- */
+
+  --duration-fast: 120ms;
+  --duration-normal: 180ms;
+  --duration-medium: 240ms;
+  --duration-slow: 360ms;
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* ------------------------------------------------------------------------- */
+  /* Shadows                                                                    */
+  /* ------------------------------------------------------------------------- */
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08);
+  --shadow-md: 0 6px 20px rgb(0 0 0 / 0.12);
+  --shadow-lg: 0 14px 40px rgb(0 0 0 / 0.16);
+
+  /* ------------------------------------------------------------------------- */
+  /* Z-Index                                                                    */
+  /* ------------------------------------------------------------------------- */
+
+  --z-base: 0;
+  --z-sidebar: 10;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-overlay: 500;
+  --z-modal: 1000;
+  --z-toast: 1100;
+}
+
+/* =============================================================================
+   Light Theme
+   ============================================================================= */
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* ------------------------------------------------------------------------- */
+  /* Surfaces                                                                  */
+  /* ------------------------------------------------------------------------- */
+
+  --color-bg: #f5f6f8;
+  --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-surface-subtle: #f0f1f4;
+  --color-surface-hover: #f7f8fa;
+  --color-surface-active: #eceef2;
+
+  /* ------------------------------------------------------------------------- */
+  /* Borders                                                                    */
+  /* ------------------------------------------------------------------------- */
+
+  --color-border: #dfe2e7;
+  --color-border-strong: #cdd1d8;
+  --color-border-subtle: #eaecf0;
+
+  /* ------------------------------------------------------------------------- */
+  /* Text                                                                       */
+  /* ------------------------------------------------------------------------- */
+
+  --color-text-primary: #181a1f;
+  --color-text-secondary: #5f6570;
+  --color-text-tertiary: #858b96;
+  --color-text-disabled: #aeb3bb;
+  --color-text-inverse: #ffffff;
+
+  /* ------------------------------------------------------------------------- */
+  /* Brand / Accent                                                             */
+  /* ------------------------------------------------------------------------- */
+
+  --color-accent: #315cbb;
+  --color-accent-hover: #274d9f;
+  --color-accent-active: #1f428d;
+  --color-accent-soft: #e9eefb;
+  --color-accent-text: #244894;
+
+  /* ------------------------------------------------------------------------- */
+  /* Semantic                                                                   */
+  /* ------------------------------------------------------------------------- */
+
+  --color-success: #28784a;
+  --color-success-soft: #e7f4eb;
+  --color-success-text: #21663f;
+
+  --color-warning: #9a6a13;
+  --color-warning-soft: #fbf1dc;
+  --color-warning-text: #80570f;
+
+  --color-danger: #b33a3a;
+  --color-danger-soft: #fae9e9;
+  --color-danger-text: #983232;
+
+  --color-info: #326b91;
+  --color-info-soft: #e8f2f8;
+  --color-info-text: #285b7d;
+
+  /* ------------------------------------------------------------------------- */
+  /* Interactive                                                               */
+  /* ------------------------------------------------------------------------- */
+
+  --color-focus-ring: #315cbb;
+
+  /* ------------------------------------------------------------------------- */
+  /* Shadows                                                                    */
+  /* ------------------------------------------------------------------------- */
+
+  --shadow-card: 0 1px 3px rgb(0 0 0 / 0.06);
+  --shadow-floating: 0 12px 30px rgb(0 0 0 / 0.1);
+}
+
+/* =============================================================================
+   Dark Theme
+   ============================================================================= */
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* ------------------------------------------------------------------------- */
+  /* Surfaces                                                                  */
+  /* ------------------------------------------------------------------------- */
+
+  --color-bg: #101216;
+  --color-surface: #171a20;
+  --color-surface-raised: #1d2027;
+  --color-surface-subtle: #14171c;
+  --color-surface-hover: #20242c;
+  --color-surface-active: #262a33;
+
+  /* ------------------------------------------------------------------------- */
+  /* Borders                                                                    */
+  /* ------------------------------------------------------------------------- */
+
+  --color-border: #292e37;
+  --color-border-strong: #373d48;
+  --color-border-subtle: #22262e;
+
+  /* ------------------------------------------------------------------------- */
+  /* Text                                                                       */
+  /* ------------------------------------------------------------------------- */
+
+  --color-text-primary: #f1f3f5;
+  --color-text-secondary: #a5abb5;
+  --color-text-tertiary: #777e89;
+  --color-text-disabled: #555b65;
+  --color-text-inverse: #111318;
+
+  /* ------------------------------------------------------------------------- */
+  /* Brand / Accent                                                             */
+  /* ------------------------------------------------------------------------- */
+
+  --color-accent: #6f91df;
+  --color-accent-hover: #82a2e8;
+  --color-accent-active: #9ab5ee;
+  --color-accent-soft: #202b47;
+  --color-accent-text: #a9bdf0;
+
+  /* ------------------------------------------------------------------------- */
+  /* Semantic                                                                   */
+  /* ------------------------------------------------------------------------- */
+
+  --color-success: #63b783;
+  --color-success-soft: #193225;
+  --color-success-text: #83ca9c;
+
+  --color-warning: #d2a354;
+  --color-warning-soft: #352b1b;
+  --color-warning-text: #e2b96e;
+
+  --color-danger: #dc7777;
+  --color-danger-soft: #3a2022;
+  --color-danger-text: #eb9090;
+
+  --color-info: #6ca5c7;
+  --color-info-soft: #1b2d38;
+  --color-info-text: #86b9d5;
+
+  /* ------------------------------------------------------------------------- */
+  /* Interactive                                                               */
+  /* ------------------------------------------------------------------------- */
+
+  --color-focus-ring: #8aa8ed;
+
+  /* ------------------------------------------------------------------------- */
+  /* Shadows                                                                    */
+  /* ------------------------------------------------------------------------- */
+
+  --shadow-card: 0 1px 3px rgb(0 0 0 / 0.28);
+  --shadow-floating: 0 14px 36px rgb(0 0 0 / 0.35);
+}
+
+/* =============================================================================
+   System Theme
+   ============================================================================= */
+
+/*
+ * The HTML document starts with data-theme="system".
+ *
+ * When the application is using the system theme, these media queries allow
+ * the browser/Electron renderer to follow the operating system preference.
+ */
+
+[data-theme="system"] {
+  color-scheme: light dark;
+}
+
+/* System light mode */
+
+@media (prefers-color-scheme: light) {
+  [data-theme="system"] {
+    color-scheme: light;
+
+    --color-bg: #f5f6f8;
+    --color-surface: #ffffff;
+    --color-surface-raised: #ffffff;
+    --color-surface-subtle: #f0f1f4;
+    --color-surface-hover: #f7f8fa;
+    --color-surface-active: #eceef2;
+
+    --color-border: #dfe2e7;
+    --color-border-strong: #cdd1d8;
+    --color-border-subtle: #eaecf0;
+
+    --color-text-primary: #181a1f;
+    --color-text-secondary: #5f6570;
+    --color-text-tertiary: #858b96;
+    --color-text-disabled: #aeb3bb;
+    --color-text-inverse: #ffffff;
+
+    --color-accent: #315cbb;
+    --color-accent-hover: #274d9f;
+    --color-accent-active: #1f428d;
+    --color-accent-soft: #e9eefb;
+    --color-accent-text: #244894;
+
+    --color-success: #28784a;
+    --color-success-soft: #e7f4eb;
+    --color-success-text: #21663f;
+
+    --color-warning: #9a6a13;
+    --color-warning-soft: #fbf1dc;
+    --color-warning-text: #80570f;
+
+    --color-danger: #b33a3a;
+    --color-danger-soft: #fae9e9;
+    --color-danger-text: #983232;
+
+    --color-info: #326b91;
+    --color-info-soft: #e8f2f8;
+    --color-info-text: #285b7d;
+
+    --color-focus-ring: #315cbb;
+
+    --shadow-card: 0 1px 3px rgb(0 0 0 / 0.06);
+    --shadow-floating: 0 12px 30px rgb(0 0 0 / 0.1);
+  }
+}
+
+/* System dark mode */
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="system"] {
+    color-scheme: dark;
+
+    --color-bg: #101216;
+    --color-surface: #171a20;
+    --color-surface-raised: #1d2027;
+    --color-surface-subtle: #14171c;
+    --color-surface-hover: #20242c;
+    --color-surface-active: #262a33;
+
+    --color-border: #292e37;
+    --color-border-strong: #373d48;
+    --color-border-subtle: #22262e;
+
+    --color-text-primary: #f1f3f5;
+    --color-text-secondary: #a5abb5;
+    --color-text-tertiary: #777e89;
+    --color-text-disabled: #555b65;
+    --color-text-inverse: #111318;
+
+    --color-accent: #6f91df;
+    --color-accent-hover: #82a2e8;
+    --color-accent-active: #9ab5ee;
+    --color-accent-soft: #202b47;
+    --color-accent-text: #a9bdf0;
+
+    --color-success: #63b783;
+    --color-success-soft: #193225;
+    --color-success-text: #83ca9c;
+
+    --color-warning: #d2a354;
+    --color-warning-soft: #352b1b;
+    --color-warning-text: #e2b96e;
+
+    --color-danger: #dc7777;
+    --color-danger-soft: #3a2022;
+    --color-danger-text: #eb9090;
+
+    --color-info: #6ca5c7;
+    --color-info-soft: #1b2d38;
+    --color-info-text: #86b9d5;
+
+    --color-focus-ring: #8aa8ed;
+
+    --shadow-card: 0 1px 3px rgb(0 0 0 / 0.28);
+    --shadow-floating: 0 14px 36px rgb(0 0 0 / 0.35);
+  }
+}
+
+/* =============================================================================
+   Accessibility / Reduced Motion
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-normal: 0ms;
+    --duration-medium: 0ms;
+    --duration-slow: 0ms;
+  }
+}

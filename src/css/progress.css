@@ -1,0 +1,819 @@
+/**
+ * =============================================================================
+ * EduDit
+ * Progress
+ * =============================================================================
+ *
+ * Visual presentation for learner progress and analytics.
+ *
+ * Data calculation, aggregation, filtering, and trend analysis belong to the
+ * progress feature and statistics systems, not this stylesheet.
+ * =============================================================================
+ */
+
+/* =============================================================================
+   Progress Layout
+   ============================================================================= */
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+
+  min-height: 100%;
+}
+
+.progress-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.progress-header-content {
+  min-width: 0;
+}
+
+.progress-title {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+}
+
+.progress-description {
+  max-width: 62ch;
+
+  margin-top: var(--space-2);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.progress-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  flex: 0 0 auto;
+}
+
+/* =============================================================================
+   Summary Statistics
+   ============================================================================= */
+
+.progress-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  background: var(--color-surface);
+
+  overflow: hidden;
+}
+
+.progress-stat {
+  min-width: 0;
+
+  padding: var(--space-5);
+}
+
+.progress-stat + .progress-stat {
+  border-left: var(--border-width-thin) solid var(--color-border);
+}
+
+.progress-stat-label {
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+}
+
+.progress-stat-value {
+  margin-top: var(--space-2);
+
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-stat-detail {
+  margin-top: var(--space-1);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+}
+
+/* =============================================================================
+   Progress Grid
+   ============================================================================= */
+
+.progress-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.progress-grid-wide {
+  grid-column: 1 / -1;
+}
+
+/* =============================================================================
+   Progress Cards
+   ============================================================================= */
+
+.progress-card {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+  min-height: 0;
+
+  padding: var(--space-5);
+
+  background: var(--color-surface);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-card);
+}
+
+.progress-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+
+  margin-bottom: var(--space-5);
+}
+
+.progress-card-title {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.progress-card-description {
+  margin-top: var(--space-1);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-relaxed);
+}
+
+.progress-card-action {
+  flex: 0 0 auto;
+}
+
+/* =============================================================================
+   Chart Containers
+   ============================================================================= */
+
+.progress-chart {
+  position: relative;
+
+  width: 100%;
+  min-height: 15rem;
+}
+
+.progress-chart-large {
+  min-height: 20rem;
+}
+
+.progress-chart-small {
+  min-height: 11rem;
+}
+
+.progress-chart canvas,
+.progress-chart svg {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * Empty chart state.
+ */
+
+.progress-chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 12rem;
+
+  padding: var(--space-6);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-sm);
+
+  text-align: center;
+}
+
+/* =============================================================================
+   Chart Legend
+   ============================================================================= */
+
+.progress-chart-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+
+  margin-top: var(--space-4);
+}
+
+.progress-chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-xs);
+}
+
+.progress-chart-legend-marker {
+  width: 0.55rem;
+  height: 0.55rem;
+
+  background: var(--color-text-tertiary);
+
+  border-radius: var(--radius-full);
+}
+
+/* =============================================================================
+   Mastery Distribution
+   ============================================================================= */
+
+.mastery-distribution {
+  display: grid;
+  grid-template-columns: minmax(11rem, 0.9fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.mastery-chart {
+  position: relative;
+
+  display: grid;
+  place-items: center;
+
+  aspect-ratio: 1;
+  width: min(16rem, 100%);
+
+  margin-inline: auto;
+}
+
+.mastery-chart-center {
+  position: absolute;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  pointer-events: none;
+}
+
+.mastery-chart-value {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+
+  font-variant-numeric: tabular-nums;
+}
+
+.mastery-chart-label {
+  margin-top: var(--space-1);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+}
+
+.mastery-legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.mastery-legend-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.mastery-legend-marker {
+  width: 0.55rem;
+  height: 0.55rem;
+
+  background: var(--color-text-tertiary);
+
+  border-radius: var(--radius-full);
+}
+
+.mastery-legend-label {
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+}
+
+.mastery-legend-value {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+
+  font-variant-numeric: tabular-nums;
+}
+
+/* =============================================================================
+   Character Performance
+   ============================================================================= */
+
+.progress-character-list {
+  display: flex;
+  flex-direction: column;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.progress-character-row {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(8rem, 1fr) 7rem 7rem 7rem;
+  align-items: center;
+  gap: var(--space-4);
+
+  min-width: 0;
+
+  padding: var(--space-4) 0;
+
+  border-top: var(--border-width-thin) solid var(--color-border);
+}
+
+.progress-character-row:first-child {
+  border-top: 0;
+}
+
+.progress-character-symbol {
+  color: var(--color-text-primary);
+
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.progress-character-name {
+  min-width: 0;
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+}
+
+.progress-character-metric {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+
+  min-width: 0;
+}
+
+.progress-character-metric-label {
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+}
+
+.progress-character-metric-value {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+
+  font-variant-numeric: tabular-nums;
+}
+
+/* =============================================================================
+   Character Accuracy Bar
+   ============================================================================= */
+
+.progress-accuracy {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.progress-accuracy-bar {
+  flex: 1 1 auto;
+
+  height: 0.35rem;
+
+  background: var(--color-surface-subtle);
+
+  border-radius: var(--radius-full);
+
+  overflow: hidden;
+}
+
+.progress-accuracy-fill {
+  height: 100%;
+  width: var(--progress, 0%);
+
+  background: var(--color-accent);
+
+  border-radius: inherit;
+}
+
+.progress-accuracy-value {
+  flex: 0 0 auto;
+
+  min-width: 3.25rem;
+
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* =============================================================================
+   Mastery Indicators
+   ============================================================================= */
+
+.progress-mastery {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  min-width: 0;
+}
+
+.progress-mastery-indicator {
+  flex: 0 0 auto;
+
+  width: 0.55rem;
+  height: 0.55rem;
+
+  background: var(--color-text-tertiary);
+
+  border-radius: var(--radius-full);
+}
+
+.progress-mastery-label {
+  min-width: 0;
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+}
+
+/* =============================================================================
+   Weakest Characters
+   ============================================================================= */
+
+.progress-weakest {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.progress-weak-character {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+
+  padding: var(--space-3);
+
+  background: var(--color-surface-subtle);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.progress-weak-character-symbol {
+  display: grid;
+  place-items: center;
+
+  width: 2.25rem;
+  height: 2.25rem;
+
+  color: var(--color-text-primary);
+
+  background: var(--color-surface-raised);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-sm);
+
+  font-family: var(--font-family-mono);
+  font-weight: var(--font-weight-semibold);
+}
+
+.progress-weak-character-info {
+  min-width: 0;
+}
+
+.progress-weak-character-name {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.progress-weak-character-detail {
+  margin-top: var(--space-1);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+}
+
+.progress-weak-character-score {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+
+  font-variant-numeric: tabular-nums;
+}
+
+/* =============================================================================
+   Improvement Indicators
+   ============================================================================= */
+
+.progress-improvement {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.progress-improvement-positive {
+  color: var(--color-success-text);
+}
+
+.progress-improvement-negative {
+  color: var(--color-danger-text);
+}
+
+.progress-improvement-neutral {
+  color: var(--color-text-tertiary);
+}
+
+/* =============================================================================
+   Top Improving Characters
+   ============================================================================= */
+
+.progress-improving-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.progress-improving-item {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.progress-improving-rank {
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-improving-symbol {
+  color: var(--color-text-primary);
+
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.progress-improving-name {
+  min-width: 0;
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+}
+
+.progress-improving-change {
+  color: var(--color-success-text);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+
+  font-variant-numeric: tabular-nums;
+}
+
+/* =============================================================================
+   Date / Range Controls
+   ============================================================================= */
+
+.progress-range {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+
+  padding: 0.2rem;
+
+  background: var(--color-surface-subtle);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.progress-range-button {
+  padding: var(--space-2) var(--space-3);
+
+  color: var(--color-text-secondary);
+  background: transparent;
+
+  border: 0;
+  border-radius: var(--radius-sm);
+
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+
+  cursor: pointer;
+}
+
+.progress-range-button:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-raised);
+}
+
+.progress-range-button-active {
+  color: var(--color-text-primary);
+  background: var(--color-surface-raised);
+
+  box-shadow: var(--shadow-xs);
+}
+
+/* =============================================================================
+   Filters / Sorting
+   ============================================================================= */
+
+.progress-filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+
+  margin-bottom: var(--space-4);
+}
+
+.progress-filter {
+  min-width: 9rem;
+}
+
+/* =============================================================================
+   Empty State
+   ============================================================================= */
+
+.progress-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 15rem;
+
+  padding: var(--space-8);
+
+  color: var(--color-text-secondary);
+
+  text-align: center;
+}
+
+.progress-empty-title {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.progress-empty-description {
+  max-width: 42ch;
+
+  margin-top: var(--space-2);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+/* =============================================================================
+   Responsive Progress
+   ============================================================================= */
+
+@media (max-width: 1000px) {
+  .progress-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .progress-stat:nth-child(odd) {
+    border-left: 0;
+  }
+
+  .progress-stat:nth-child(n + 3) {
+    border-top: var(--border-width-thin) solid var(--color-border);
+  }
+
+  .progress-character-row {
+    grid-template-columns: 3rem minmax(8rem, 1fr) 6rem 6rem;
+  }
+
+  .progress-character-row > :last-child {
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .progress-header {
+    flex-direction: column;
+  }
+
+  .progress-header-actions {
+    width: 100%;
+  }
+
+  .progress-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .progress-grid-wide {
+    grid-column: auto;
+  }
+
+  .mastery-distribution {
+    grid-template-columns: 1fr;
+  }
+
+  .mastery-chart {
+    width: min(13rem, 100%);
+  }
+}
+
+@media (max-width: 600px) {
+  .progress-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .progress-stat + .progress-stat {
+    border-left: 0;
+    border-top: var(--border-width-thin) solid var(--color-border);
+  }
+
+  .progress-character-row {
+    grid-template-columns: 2.75rem minmax(0, 1fr) auto;
+  }
+
+  .progress-character-row > :nth-child(3),
+  .progress-character-row > :nth-child(4) {
+    display: none;
+  }
+
+  .progress-chart {
+    min-height: 12rem;
+  }
+
+  .progress-chart-large {
+    min-height: 15rem;
+  }
+
+  .progress-card {
+    padding: var(--space-4);
+  }
+}

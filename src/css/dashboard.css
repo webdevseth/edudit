@@ -1,0 +1,552 @@
+/**
+ * =============================================================================
+ * EduDit
+ * Dashboard
+ * =============================================================================
+ *
+ * Dashboard-specific layout and presentation.
+ * Shared components remain in components.css.
+ * =============================================================================
+ */
+
+/* =============================================================================
+   Dashboard Layout
+   ============================================================================= */
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* =============================================================================
+   Welcome Header
+   ============================================================================= */
+
+.dashboard-welcome {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.dashboard-welcome-content {
+  min-width: 0;
+}
+
+.dashboard-eyebrow {
+  margin-bottom: var(--space-2);
+
+  color: var(--color-accent-text);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.02em;
+}
+
+.dashboard-title {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+}
+
+.dashboard-subtitle {
+  max-width: 58ch;
+
+  margin-top: var(--space-2);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-relaxed);
+}
+
+/* =============================================================================
+   Continue Training
+   ============================================================================= */
+
+.continue-card {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+
+  min-height: 12rem;
+
+  padding: var(--space-6);
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--color-accent-soft),
+      var(--color-surface) 60%
+    );
+
+  border: var(--border-width-thin) solid var(--color-accent-border);
+  border-radius: var(--radius-xl);
+}
+
+.continue-card-content {
+  position: relative;
+
+  min-width: 0;
+
+  z-index: 1;
+}
+
+.continue-card-eyebrow {
+  margin-bottom: var(--space-2);
+
+  color: var(--color-accent-text);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.continue-card-title {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+}
+
+.continue-card-description {
+  max-width: 50ch;
+
+  margin-top: var(--space-2);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.continue-card-action {
+  margin-top: var(--space-5);
+}
+
+.continue-card-decoration {
+  position: absolute;
+
+  right: -4rem;
+  bottom: -5rem;
+
+  width: 16rem;
+  height: 16rem;
+
+  border: 1px solid var(--color-accent-border);
+  border-radius: var(--radius-full);
+
+  opacity: 0.55;
+
+  pointer-events: none;
+}
+
+.continue-card-decoration::before,
+.continue-card-decoration::after {
+  content: "";
+
+  position: absolute;
+
+  border: 1px solid var(--color-accent-border);
+  border-radius: var(--radius-full);
+}
+
+.continue-card-decoration::before {
+  inset: 2rem;
+}
+
+.continue-card-decoration::after {
+  inset: 4rem;
+}
+
+/* =============================================================================
+   Dashboard Stats
+   ============================================================================= */
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.dashboard-stat-card {
+  min-width: 0;
+}
+
+.dashboard-stat-card .stat-value {
+  white-space: nowrap;
+}
+
+/* =============================================================================
+   Dashboard Main Grid
+   ============================================================================= */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(18rem, 0.8fr);
+  gap: var(--space-5);
+
+  align-items: start;
+}
+
+.dashboard-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+
+  min-width: 0;
+}
+
+/* =============================================================================
+   Recently Learned
+   ============================================================================= */
+
+.recently-learned {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.recent-character {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 7rem;
+
+  padding: var(--space-3);
+
+  background: var(--color-surface-raised);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+.recent-character:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-strong);
+
+  transform: translateY(-1px);
+}
+
+.recent-character-symbol {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+}
+
+.recent-character-morse {
+  margin-top: var(--space-2);
+
+  color: var(--color-text-tertiary);
+
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.08em;
+}
+
+.recent-character-label {
+  margin-top: var(--space-2);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+}
+
+/* =============================================================================
+   Training Overview
+   ============================================================================= */
+
+.training-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(10rem, 0.45fr);
+  gap: var(--space-6);
+
+  align-items: center;
+}
+
+.training-overview-main {
+  min-width: 0;
+}
+
+.training-overview-value {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+}
+
+.training-overview-label {
+  margin-top: var(--space-2);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+}
+
+.training-overview-progress {
+  margin-top: var(--space-5);
+}
+
+.training-overview-detail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+
+  margin-top: var(--space-2);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+}
+
+/* =============================================================================
+   Weak Characters
+   ============================================================================= */
+
+.weak-characters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.weak-character {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  gap: var(--space-3);
+
+  align-items: center;
+
+  padding: var(--space-3);
+
+  border-radius: var(--radius-md);
+
+  transition:
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.weak-character:hover {
+  background: var(--color-surface-hover);
+}
+
+.weak-character-symbol {
+  display: grid;
+  place-items: center;
+
+  width: 2.5rem;
+  height: 2.5rem;
+
+  color: var(--color-text-primary);
+  background: var(--color-surface-subtle);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+.weak-character-info {
+  min-width: 0;
+}
+
+.weak-character-name {
+  overflow: hidden;
+
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.weak-character-detail {
+  margin-top: var(--space-1);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+}
+
+.weak-character-score {
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+
+  white-space: nowrap;
+}
+
+/* =============================================================================
+   Session Summary
+   ============================================================================= */
+
+.session-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  overflow: hidden;
+}
+
+.session-summary-item {
+  min-width: 0;
+
+  padding: var(--space-4);
+
+  background: var(--color-surface);
+}
+
+.session-summary-item + .session-summary-item {
+  border-left: var(--border-width-thin) solid var(--color-border);
+}
+
+/* =============================================================================
+   Dashboard Empty / First-Use State
+   ============================================================================= */
+
+.dashboard-first-use {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+
+  padding: var(--space-6);
+
+  background: var(--color-surface);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.dashboard-first-use-content {
+  min-width: 0;
+}
+
+.dashboard-first-use-title {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dashboard-first-use-description {
+  max-width: 55ch;
+
+  margin-top: var(--space-2);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.dashboard-first-use-action {
+  flex: 0 0 auto;
+}
+
+/* =============================================================================
+   Responsive Dashboard
+   ============================================================================= */
+
+@media (max-width: 1000px) {
+  .dashboard-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard {
+    gap: var(--space-6);
+  }
+
+  .dashboard-welcome {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dashboard-title {
+    font-size: var(--font-size-3xl);
+  }
+
+  .continue-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .continue-card-action {
+    width: 100%;
+  }
+
+  .continue-card-action .button {
+    width: 100%;
+  }
+
+  .recently-learned {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .training-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-first-use {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dashboard-first-use-action {
+    width: 100%;
+  }
+
+  .dashboard-first-use-action .button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .session-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .session-summary-item + .session-summary-item {
+    border-top: var(--border-width-thin) solid var(--color-border);
+    border-left: 0;
+  }
+
+  .recent-character {
+    min-height: 6rem;
+  }
+}

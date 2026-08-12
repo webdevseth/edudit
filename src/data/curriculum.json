@@ -1,0 +1,186 @@
+{
+  "characters": [
+    {
+      "id": "K",
+      "symbol": "K",
+      "type": "letter",
+      "morse": "-.-",
+      "order": 1
+    },
+    {
+      "id": "M",
+      "symbol": "M",
+      "type": "letter",
+      "morse": "--",
+      "order": 2
+    },
+    {
+      "id": "R",
+      "symbol": "R",
+      "type": "letter",
+      "morse": ".-.",
+      "order": 3
+    },
+    {
+      "id": "S",
+      "symbol": "S",
+      "type": "letter",
+      "morse": "...",
+      "order": 4
+    },
+    {
+      "id": "U",
+      "symbol": "U",
+      "type": "letter",
+      "morse": "..-",
+      "order": 5
+    },
+    {
+      "id": "A",
+      "symbol": "A",
+      "type": "letter",
+      "morse": ".-",
+      "order": 6
+    },
+    {
+      "id": "P",
+      "symbol": "P",
+      "type": "letter",
+      "morse": ".--.",
+      "order": 7
+    },
+    {
+      "id": "T",
+      "symbol": "T",
+      "type": "letter",
+      "morse": "-",
+      "order": 8
+    },
+    {
+      "id": "L",
+      "symbol": "L",
+      "type": "letter",
+      "morse": ".-..",
+      "order": 9
+    },
+    {
+      "id": "O",
+      "symbol": "O",
+      "type": "letter",
+      "morse": "---",
+      "order": 10
+    },
+    {
+      "id": "W",
+      "symbol": "W",
+      "type": "letter",
+      "morse": ".--",
+      "order": 11
+    },
+    {
+      "id": "I",
+      "symbol": "I",
+      "type": "letter",
+      "morse": "..",
+      "order": 12
+    },
+    {
+      "id": "N",
+      "symbol": "N",
+      "type": "letter",
+      "morse": "-.",
+      "order": 13
+    },
+    {
+      "id": "J",
+      "symbol": "J",
+      "type": "letter",
+      "morse": ".---",
+      "order": 14
+    },
+    {
+      "id": "E",
+      "symbol": "E",
+      "type": "letter",
+      "morse": ".",
+      "order": 15
+    },
+    {
+      "id": "F",
+      "symbol": "F",
+      "type": "letter",
+      "morse": "..-.",
+      "order": 16
+    },
+    {
+      "id": "Y",
+      "symbol": "Y",
+      "type": "letter",
+      "morse": "-.--",
+      "order": 17
+    },
+    {
+      "id": "C",
+      "symbol": "C",
+      "type": "letter",
+      "morse": "-.-.",
+      "order": 18
+    },
+    {
+      "id": "D",
+      "symbol": "D",
+      "type": "letter",
+      "morse": "-..",
+      "order": 19
+    },
+    {
+      "id": "B",
+      "symbol": "B",
+      "type": "letter",
+      "morse": "-...",
+      "order": 20
+    },
+    {
+      "id": "G",
+      "symbol": "G",
+      "type": "letter",
+      "morse": "--.",
+      "order": 21
+    },
+    {
+      "id": "H",
+      "symbol": "H",
+      "type": "letter",
+      "morse": "....",
+      "order": 22
+    },
+    {
+      "id": "V",
+      "symbol": "V",
+      "type": "letter",
+      "morse": "...-",
+      "order": 23
+    },
+    {
+      "id": "X",
+      "symbol": "X",
+      "type": "letter",
+      "morse": "-..-",
+      "order": 24
+    },
+    {
+      "id": "Q",
+      "symbol": "Q",
+      "type": "letter",
+      "morse": "--.-",
+      "order": 25
+    },
+    {
+      "id": "Z",
+      "symbol": "Z",
+      "type": "letter",
+      "morse": "--..",
+      "order": 26
+    }
+  ]
+}

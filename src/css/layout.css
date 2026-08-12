@@ -1,0 +1,563 @@
+/**
+ * =============================================================================
+ * EduDit
+ * Application Layout
+ * =============================================================================
+ *
+ * Defines the global application frame:
+ *
+ *   ┌──────────────┬─────────────────────────────────────┐
+ *   │              │                                     │
+ *   │   Sidebar    │          Main Content               │
+ *   │              │                                     │
+ *   │              │                                     │
+ *   └──────────────┴─────────────────────────────────────┘
+ *
+ * Page-specific layout belongs in the appropriate feature stylesheet.
+ * =============================================================================
+ */
+
+/* =============================================================================
+   Application Shell
+   ============================================================================= */
+
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+
+  min-height: 100vh;
+
+  background: var(--color-bg);
+}
+
+/* =============================================================================
+   Sidebar
+   ============================================================================= */
+
+.app-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+
+  display: flex;
+  flex-direction: column;
+
+  width: var(--sidebar-width);
+  height: 100vh;
+
+  padding: var(--space-5);
+
+  background: var(--color-surface);
+  border-right: var(--border-width-thin) solid var(--color-border);
+
+  z-index: var(--z-sidebar);
+
+  overflow-y: auto;
+}
+
+/* =============================================================================
+   Sidebar Header
+   ============================================================================= */
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+
+  min-height: 3rem;
+
+  margin-bottom: var(--space-8);
+}
+
+/* =============================================================================
+   Brand
+   ============================================================================= */
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+
+  min-width: 0;
+
+  color: var(--color-text-primary);
+
+  border-radius: var(--radius-md);
+
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    opacity var(--duration-fast) var(--ease-standard);
+}
+
+.brand:hover {
+  color: var(--color-accent);
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+
+  width: 2rem;
+  height: 2rem;
+
+  flex: 0 0 auto;
+
+  color: var(--color-text-inverse);
+  background: var(--color-accent);
+
+  border-radius: var(--radius-md);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.brand-name {
+  overflow: hidden;
+
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =============================================================================
+   Primary Navigation
+   ============================================================================= */
+
+.primary-navigation {
+  flex: 1 1 auto;
+}
+
+.navigation-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.navigation-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+
+  width: 100%;
+  min-height: 2.75rem;
+
+  padding: var(--space-2) var(--space-3);
+
+  color: var(--color-text-secondary);
+
+  border-radius: var(--radius-md);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.navigation-link:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-hover);
+}
+
+.navigation-link[aria-current="page"] {
+  color: var(--color-accent-text);
+  background: var(--color-accent-soft);
+}
+
+.navigation-link[aria-current="page"]:hover {
+  background: var(--color-accent-soft);
+}
+
+.navigation-icon {
+  display: grid;
+  place-items: center;
+
+  width: 1.25rem;
+  height: 1.25rem;
+
+  flex: 0 0 1.25rem;
+
+  color: currentColor;
+
+  font-size: var(--font-size-md);
+  line-height: 1;
+}
+
+.navigation-label {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =============================================================================
+   Sidebar Footer
+   ============================================================================= */
+
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  margin-top: var(--space-8);
+}
+
+/* =============================================================================
+   Profile Switcher
+   ============================================================================= */
+
+.profile-switcher {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+
+  width: 100%;
+
+  padding: var(--space-3);
+
+  color: var(--color-text-primary);
+  background: transparent;
+
+  border: var(--border-width-thin) solid transparent;
+  border-radius: var(--radius-lg);
+
+  text-align: left;
+
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.profile-switcher:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-subtle);
+}
+
+.profile-avatar {
+  display: grid;
+  place-items: center;
+
+  width: 2rem;
+  height: 2rem;
+
+  flex: 0 0 2rem;
+
+  color: var(--color-accent-text);
+  background: var(--color-accent-soft);
+
+  border-radius: var(--radius-full);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.profile-summary {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.profile-label {
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+}
+
+.profile-name {
+  margin-top: var(--space-1);
+
+  overflow: hidden;
+
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-snug);
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =============================================================================
+   Main Content
+   ============================================================================= */
+
+.main-content {
+  grid-column: 2;
+
+  min-width: 0;
+  min-height: 100vh;
+
+  padding: var(--content-padding-y) var(--content-padding-x);
+
+  background: var(--color-bg);
+
+  overflow-x: hidden;
+}
+
+/* =============================================================================
+   View Container
+   ============================================================================= */
+
+.view-container {
+  width: min(100%, var(--content-max-width));
+
+  margin: 0 auto;
+}
+
+/* =============================================================================
+   View Lifecycle / Transitions
+   ============================================================================= */
+
+.view {
+  width: 100%;
+}
+
+/*
+ * These classes are available to the router when it performs view
+ * transitions. The router can opt into them without requiring page-specific
+ * animation code.
+ */
+
+.view-enter {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.view-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+
+  transition:
+    opacity var(--duration-normal) var(--ease-standard),
+    transform var(--duration-normal) var(--ease-standard);
+}
+
+.view-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.view-exit-active {
+  opacity: 0;
+  transform: translateY(-4px);
+
+  transition:
+    opacity var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+/* =============================================================================
+   Loading State
+   ============================================================================= */
+
+.app-loading {
+  display: grid;
+  place-items: center;
+  gap: var(--space-4);
+
+  min-height: 50vh;
+
+  color: var(--color-text-secondary);
+
+  text-align: center;
+}
+
+.loading-indicator {
+  width: 1.5rem;
+  height: 1.5rem;
+
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-accent);
+
+  border-radius: var(--radius-full);
+
+  animation: edudit-loading-spin 700ms linear infinite;
+}
+
+@keyframes edudit-loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =============================================================================
+   Responsive Layout
+   ============================================================================= */
+
+/*
+ * At narrower desktop/tablet widths, reduce the sidebar slightly while
+ * preserving the application's two-column structure.
+ */
+
+@media (max-width: 900px) {
+  :root {
+    --sidebar-width: 13rem;
+  }
+
+  .app-sidebar {
+    padding: var(--space-4);
+  }
+
+  .sidebar-header {
+    margin-bottom: var(--space-6);
+  }
+
+  .navigation-link {
+    padding-inline: var(--space-2);
+  }
+}
+
+/*
+ * At small widths, convert the sidebar into a compact horizontal navigation
+ * area.
+ *
+ * This keeps the application usable without introducing a second routing
+ * architecture.
+ */
+
+@media (max-width: 700px) {
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .app-sidebar {
+    position: sticky;
+    inset: auto;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    width: 100%;
+    height: auto;
+
+    min-height: 4rem;
+
+    padding: var(--space-3) var(--content-padding-x);
+
+    border-right: 0;
+    border-bottom: var(--border-width-thin) solid var(--color-border);
+
+    overflow: visible;
+  }
+
+  .sidebar-header {
+    margin: 0 var(--space-4) 0 0;
+  }
+
+  .brand-name {
+    display: none;
+  }
+
+  .brand-mark {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .primary-navigation {
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .navigation-list {
+    flex-direction: row;
+    gap: var(--space-1);
+  }
+
+  .navigation-link {
+    width: auto;
+    white-space: nowrap;
+  }
+
+  .navigation-icon {
+    display: none;
+  }
+
+  .sidebar-footer {
+    flex-direction: row;
+    align-items: center;
+
+    margin: 0 0 0 var(--space-4);
+  }
+
+  .sidebar-footer > .navigation-link {
+    display: none;
+  }
+
+  .profile-switcher {
+    width: auto;
+    padding: var(--space-2);
+  }
+
+  .profile-summary {
+    display: none;
+  }
+
+  .main-content {
+    grid-column: auto;
+
+    min-height: calc(100vh - 4rem);
+  }
+}
+
+/*
+ * Very narrow windows should prioritize usable content over navigation
+ * labels.
+ */
+
+@media (max-width: 480px) {
+  .app-sidebar {
+    padding-inline: var(--space-2);
+  }
+
+  .sidebar-header {
+    margin-right: var(--space-2);
+  }
+
+  .navigation-link {
+    min-height: 2.5rem;
+
+    padding-inline: var(--space-2);
+
+    font-size: var(--font-size-xs);
+  }
+
+  .profile-switcher {
+    padding-inline: var(--space-2);
+  }
+
+  .main-content {
+    padding: var(--space-5) var(--space-4);
+  }
+}
+
+/* =============================================================================
+   Reduced Motion
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .view-enter-active,
+  .view-exit-active {
+    transition: none;
+  }
+
+  .loading-indicator {
+    animation: none;
+  }
+}

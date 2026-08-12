@@ -1,0 +1,546 @@
+/**
+ * =============================================================================
+ * EduDit
+ * Lessons
+ * =============================================================================
+ *
+ * Curriculum browsing and lesson-selection presentation.
+ *
+ * Lesson availability is determined by curriculum/progression logic.
+ * This file is presentation only.
+ * =============================================================================
+ */
+
+/* =============================================================================
+   Lessons Layout
+   ============================================================================= */
+
+.lessons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* =============================================================================
+   Curriculum Summary
+   ============================================================================= */
+
+.lessons-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-6);
+
+  align-items: center;
+
+  padding: var(--space-5);
+
+  background: var(--color-surface);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.lessons-summary-content {
+  min-width: 0;
+}
+
+.lessons-summary-title {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.lessons-summary-description {
+  max-width: 60ch;
+
+  margin-top: var(--space-1);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+.lessons-summary-progress {
+  width: 12rem;
+}
+
+/* =============================================================================
+   Curriculum Sections
+   ============================================================================= */
+
+.curriculum-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.curriculum-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.curriculum-section-title {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.curriculum-section-description {
+  margin-top: var(--space-1);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+}
+
+/* =============================================================================
+   Lesson Grid
+   ============================================================================= */
+
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+/* =============================================================================
+   Lesson Card
+   ============================================================================= */
+
+.lesson-card {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+  min-height: 12rem;
+
+  padding: var(--space-5);
+
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  text-align: left;
+
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+button.lesson-card {
+  width: 100%;
+
+  cursor: pointer;
+}
+
+button.lesson-card:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-strong);
+
+  transform: translateY(-1px);
+
+  box-shadow: var(--shadow-card-hover);
+}
+
+button.lesson-card:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+button.lesson-card:focus-visible {
+  border-color: var(--color-focus-ring);
+
+  box-shadow: 0 0 0 3px var(--color-focus-ring-soft);
+}
+
+/* =============================================================================
+   Lesson Card States
+   ============================================================================= */
+
+.lesson-card-unlocked {
+  background: var(--color-surface);
+}
+
+.lesson-card-current {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent-border);
+}
+
+.lesson-card-current:hover {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent);
+}
+
+.lesson-card-locked {
+  background: var(--color-surface-subtle);
+
+  cursor: not-allowed;
+}
+
+.lesson-card-locked:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* =============================================================================
+   Lesson Card Header
+   ============================================================================= */
+
+.lesson-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+
+  min-height: 1.5rem;
+}
+
+.lesson-number {
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.lesson-card-current .lesson-number {
+  color: var(--color-accent-text);
+}
+
+/* =============================================================================
+   Lesson Status
+   ============================================================================= */
+
+.lesson-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.lesson-status-icon {
+  display: inline-grid;
+  place-items: center;
+
+  width: 1rem;
+  height: 1rem;
+
+  font-size: var(--font-size-xs);
+}
+
+.lesson-status-unlocked {
+  color: var(--color-success-text);
+}
+
+.lesson-status-current {
+  color: var(--color-accent-text);
+}
+
+.lesson-status-locked {
+  color: var(--color-text-tertiary);
+}
+
+/* =============================================================================
+   Lesson Characters
+   ============================================================================= */
+
+.lesson-characters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+
+  margin-top: var(--space-5);
+}
+
+.lesson-character {
+  display: inline-grid;
+  place-items: center;
+
+  min-width: 2.5rem;
+  height: 2.5rem;
+
+  padding-inline: var(--space-2);
+
+  color: var(--color-text-primary);
+  background: var(--color-surface-subtle);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+.lesson-card-current .lesson-character {
+  color: var(--color-accent-text);
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent-border);
+}
+
+.lesson-card-locked .lesson-character {
+  color: var(--color-text-tertiary);
+}
+
+/* =============================================================================
+   Lesson Card Body
+   ============================================================================= */
+
+.lesson-card-title {
+  margin-top: var(--space-4);
+
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+}
+
+.lesson-card-description {
+  margin-top: var(--space-1);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+/* =============================================================================
+   Lesson Card Footer
+   ============================================================================= */
+
+.lesson-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+
+  margin-top: auto;
+  padding-top: var(--space-5);
+}
+
+.lesson-card-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  min-width: 0;
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+}
+
+.lesson-card-progress-bar {
+  width: 5rem;
+}
+
+/* =============================================================================
+   Lesson Lock Overlay
+   ============================================================================= */
+
+.lesson-lock {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  margin-top: auto;
+  padding-top: var(--space-5);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+}
+
+.lesson-lock-icon {
+  display: inline-grid;
+  place-items: center;
+
+  width: 1rem;
+  height: 1rem;
+
+  flex: 0 0 1rem;
+}
+
+/* =============================================================================
+   Material Type Tabs
+   ============================================================================= */
+
+.material-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+
+  padding: var(--space-1);
+
+  background: var(--color-surface-subtle);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.material-tab {
+  min-height: 2rem;
+
+  padding: var(--space-1) var(--space-3);
+
+  color: var(--color-text-secondary);
+  background: transparent;
+
+  border: 0;
+  border-radius: var(--radius-sm);
+
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+
+  cursor: pointer;
+
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.material-tab:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-hover);
+}
+
+.material-tab-active {
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.material-tab:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 1px;
+}
+
+/* =============================================================================
+   Locked Future Content
+   ============================================================================= */
+
+.future-content {
+  position: relative;
+
+  padding: var(--space-6);
+
+  background: var(--color-surface-subtle);
+
+  border: var(--border-width-thin) dashed var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.future-content-title {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+.future-content-description {
+  max-width: 60ch;
+
+  margin-top: var(--space-1);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+/* =============================================================================
+   Empty Curriculum State
+   ============================================================================= */
+
+.lessons-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 18rem;
+
+  padding: var(--space-8);
+
+  background: var(--color-surface);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  text-align: center;
+}
+
+.lessons-empty-title {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.lessons-empty-description {
+  max-width: 42ch;
+
+  margin-top: var(--space-2);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+/* =============================================================================
+   Responsive Lessons
+   ============================================================================= */
+
+@media (max-width: 1000px) {
+  .lesson-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lessons-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .lessons-summary-progress {
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .lessons {
+    gap: var(--space-6);
+  }
+
+  .lesson-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .curriculum-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .material-tabs {
+    width: 100%;
+  }
+
+  .material-tab {
+    flex: 1 1 auto;
+  }
+}

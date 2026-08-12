@@ -1,0 +1,124 @@
+{
+  "words": [
+    {
+      "id": "word-1",
+      "text": "ME",
+      "characters": ["M", "E"],
+      "difficulty": 1
+    },
+    {
+      "id": "word-2",
+      "text": "MEET",
+      "characters": ["M", "E", "E", "T"],
+      "difficulty": 1
+    },
+    {
+      "id": "word-3",
+      "text": "MET",
+      "characters": ["M", "E", "T"],
+      "difficulty": 1
+    },
+    {
+      "id": "word-4",
+      "text": "METER",
+      "characters": ["M", "E", "T", "E", "R"],
+      "difficulty": 2
+    },
+    {
+      "id": "word-5",
+      "text": "REST",
+      "characters": ["R", "E", "S", "T"],
+      "difficulty": 1
+    },
+    {
+      "id": "word-6",
+      "text": "SET",
+      "characters": ["S", "E", "T"],
+      "difficulty": 1
+    },
+    {
+      "id": "word-7",
+      "text": "STAR",
+      "characters": ["S", "T", "A", "R"],
+      "difficulty": 2
+    },
+    {
+      "id": "word-8",
+      "text": "RATE",
+      "characters": ["R", "A", "T", "E"],
+      "difficulty": 2
+    },
+    {
+      "id": "word-9",
+      "text": "TEAM",
+      "characters": ["T", "E", "A", "M"],
+      "difficulty": 2
+    },
+    {
+      "id": "word-10",
+      "text": "STREAM",
+      "characters": ["S", "T", "R", "E", "A", "M"],
+      "difficulty": 3
+    },
+    {
+      "id": "word-11",
+      "text": "MASTER",
+      "characters": ["M", "A", "S", "T", "E", "R"],
+      "difficulty": 3
+    },
+    {
+      "id": "word-12",
+      "text": "START",
+      "characters": ["S", "T", "A", "R", "T"],
+      "difficulty": 3
+    },
+    {
+      "id": "word-13",
+      "text": "PART",
+      "characters": ["P", "A", "R", "T"],
+      "difficulty": 2
+    },
+    {
+      "id": "word-14",
+      "text": "TRAP",
+      "characters": ["T", "R", "A", "P"],
+      "difficulty": 2
+    },
+    {
+      "id": "word-15",
+      "text": "PORT",
+      "characters": ["P", "O", "R", "T"],
+      "difficulty": 2
+    },
+    {
+      "id": "word-16",
+      "text": "SPORT",
+      "characters": ["S", "P", "O", "R", "T"],
+      "difficulty": 3
+    },
+    {
+      "id": "word-17",
+      "text": "STOP",
+      "characters": ["S", "T", "O", "P"],
+      "difficulty": 2
+    },
+    {
+      "id": "word-18",
+      "text": "PULSE",
+      "characters": ["P", "U", "L", "S", "E"],
+      "difficulty": 3
+    },
+    {
+      "id": "word-19",
+      "text": "LINE",
+      "characters": ["L", "I", "N", "E"],
+      "difficulty": 3
+    },
+    {
+      "id": "word-20",
+      "text": "WIRE",
+      "characters": ["W", "I", "R", "E"],
+      "difficulty": 3
+    }
+  ]
+}

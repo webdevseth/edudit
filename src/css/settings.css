@@ -1,0 +1,755 @@
+/**
+ * =============================================================================
+ * EduDit
+ * Settings
+ * =============================================================================
+ *
+ * Presentation for application and learner settings.
+ *
+ * Settings values, persistence, validation, and behavior belong to the settings
+ * feature. This file is responsible only for presentation.
+ * =============================================================================
+ */
+
+/* =============================================================================
+   Settings Layout
+   ============================================================================= */
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+
+  min-height: 100%;
+}
+
+.settings-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.settings-header-content {
+  min-width: 0;
+}
+
+.settings-title {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+}
+
+.settings-description {
+  max-width: 62ch;
+
+  margin-top: var(--space-2);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+}
+
+/* =============================================================================
+   Settings Navigation
+   ============================================================================= */
+
+.settings-layout {
+  display: grid;
+  grid-template-columns: 13rem minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-6);
+}
+
+.settings-nav {
+  position: sticky;
+  top: var(--space-6);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+
+  padding: var(--space-2);
+
+  background: var(--color-surface);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.settings-nav-button {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+
+  padding: var(--space-3);
+
+  color: var(--color-text-secondary);
+  background: transparent;
+
+  border: 0;
+  border-radius: var(--radius-md);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.settings-nav-button:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-subtle);
+}
+
+.settings-nav-button-active {
+  color: var(--color-text-primary);
+  background: var(--color-surface-raised);
+
+  box-shadow: var(--shadow-xs);
+}
+
+.settings-nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 1.25rem;
+  margin-right: var(--space-2);
+
+  color: var(--color-text-tertiary);
+}
+
+.settings-nav-button-active .settings-nav-icon {
+  color: var(--color-accent);
+}
+
+/* =============================================================================
+   Settings Content
+   ============================================================================= */
+
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+
+  min-width: 0;
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+
+  background: var(--color-surface);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-card);
+
+  overflow: hidden;
+}
+
+.settings-section-header {
+  padding: var(--space-5);
+
+  border-bottom: var(--border-width-thin) solid var(--color-border);
+}
+
+.settings-section-title {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.settings-section-description {
+  max-width: 65ch;
+
+  margin-top: var(--space-1);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-relaxed);
+}
+
+.settings-section-body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* =============================================================================
+   Setting Row
+   ============================================================================= */
+
+.setting {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(12rem, 18rem);
+  align-items: center;
+  gap: var(--space-6);
+
+  padding: var(--space-5);
+}
+
+.setting + .setting {
+  border-top: var(--border-width-thin) solid var(--color-border);
+}
+
+.setting-info {
+  min-width: 0;
+}
+
+.setting-label {
+  display: block;
+
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.setting-description {
+  max-width: 58ch;
+
+  margin-top: var(--space-1);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-relaxed);
+}
+
+.setting-control {
+  min-width: 0;
+}
+
+/* =============================================================================
+   Select Controls
+   ============================================================================= */
+
+.setting-select {
+  width: 100%;
+}
+
+/* =============================================================================
+   Toggle
+   ============================================================================= */
+
+.setting-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  width: 100%;
+}
+
+.toggle {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+
+  width: 2.75rem;
+  height: 1.5rem;
+
+  padding: 0;
+
+  background: var(--color-surface-subtle);
+
+  border: var(--border-width-thin) solid var(--color-border-strong);
+  border-radius: var(--radius-full);
+
+  cursor: pointer;
+
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.toggle::after {
+  content: "";
+
+  position: absolute;
+  top: 50%;
+  left: 0.18rem;
+
+  width: 1rem;
+  height: 1rem;
+
+  background: var(--color-text-secondary);
+
+  border-radius: var(--radius-full);
+
+  transform: translateY(-50%);
+
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+.toggle[aria-checked="true"] {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent);
+}
+
+.toggle[aria-checked="true"]::after {
+  background: var(--color-accent);
+
+  transform: translate(1.22rem, -50%);
+}
+
+/* =============================================================================
+   Segmented Options
+   ============================================================================= */
+
+.setting-options {
+  display: grid;
+
+  width: 100%;
+
+  background: var(--color-surface-subtle);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  overflow: hidden;
+}
+
+.setting-options-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.setting-options-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.setting-option {
+  position: relative;
+
+  min-width: 0;
+
+  padding: var(--space-2) var(--space-3);
+
+  color: var(--color-text-secondary);
+  background: transparent;
+
+  border: 0;
+
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+
+  cursor: pointer;
+
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.setting-option + .setting-option {
+  border-left: var(--border-width-thin) solid var(--color-border);
+}
+
+.setting-option:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-raised);
+}
+
+.setting-option-active {
+  color: var(--color-text-primary);
+  background: var(--color-surface-raised);
+
+  box-shadow: var(--shadow-xs);
+}
+
+/* =============================================================================
+   Range / Slider
+   ============================================================================= */
+
+.setting-range {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.setting-range-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.setting-range-value {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+
+  font-variant-numeric: tabular-nums;
+}
+
+.setting-range input[type="range"] {
+  width: 100%;
+}
+
+/* =============================================================================
+   Numeric / Text Value
+   ============================================================================= */
+
+.setting-value {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  width: 100%;
+}
+
+.setting-value input {
+  width: 100%;
+}
+
+.setting-value-unit {
+  flex: 0 0 auto;
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+}
+
+/* =============================================================================
+   Theme Selector
+   ============================================================================= */
+
+.theme-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.theme-option {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  padding: var(--space-3);
+
+  color: var(--color-text-secondary);
+  background: var(--color-surface-subtle);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.theme-option:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-raised);
+}
+
+.theme-option-active {
+  color: var(--color-text-primary);
+  border-color: var(--color-accent);
+}
+
+.theme-preview {
+  width: 100%;
+  height: 4rem;
+
+  margin-bottom: var(--space-3);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-sm);
+
+  overflow: hidden;
+}
+
+.theme-preview-dark {
+  background: var(--color-preview-dark-bg);
+}
+
+.theme-preview-light {
+  background: var(--color-preview-light-bg);
+}
+
+.theme-preview-system {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  background: var(--color-preview-light-bg);
+}
+
+.theme-preview-system::after {
+  content: "";
+
+  background: var(--color-preview-dark-bg);
+}
+
+.theme-option-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.theme-option-description {
+  margin-top: var(--space-1);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+}
+
+/* =============================================================================
+   Profile Setting
+   ============================================================================= */
+
+.setting-profile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.setting-profile-avatar {
+  display: grid;
+  place-items: center;
+
+  width: 2.5rem;
+  height: 2.5rem;
+
+  flex: 0 0 auto;
+
+  color: var(--color-text-primary);
+  background: var(--color-surface-subtle);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-full);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.setting-profile-info {
+  min-width: 0;
+}
+
+.setting-profile-name {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.setting-profile-detail {
+  margin-top: var(--space-1);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+}
+
+/* =============================================================================
+   Settings Actions
+   ============================================================================= */
+
+.settings-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+
+  padding: var(--space-5);
+
+  border-top: var(--border-width-thin) solid var(--color-border);
+}
+
+.settings-save-status {
+  margin-right: auto;
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+}
+
+.settings-save-status-success {
+  color: var(--color-success-text);
+}
+
+.settings-save-status-error {
+  color: var(--color-danger-text);
+}
+
+/* =============================================================================
+   Danger Zone
+   ============================================================================= */
+
+.settings-danger {
+  border-color: var(--color-danger-border);
+}
+
+.settings-danger .settings-section-header {
+  background: var(--color-danger-soft);
+
+  border-bottom-color: var(--color-danger-border);
+}
+
+.settings-danger .settings-section-title {
+  color: var(--color-danger-text);
+}
+
+.settings-danger-description {
+  color: var(--color-danger-text);
+  opacity: 0.8;
+}
+
+.settings-danger-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+
+  padding: var(--space-5);
+}
+
+.settings-danger-action + .settings-danger-action {
+  border-top: var(--border-width-thin) solid var(--color-danger-border);
+}
+
+.settings-danger-action-info {
+  min-width: 0;
+}
+
+.settings-danger-action-title {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.settings-danger-action-description {
+  max-width: 55ch;
+
+  margin-top: var(--space-1);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-relaxed);
+}
+
+/* =============================================================================
+   Unsaved Changes
+   ============================================================================= */
+
+.settings-unsaved {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+
+  padding: var(--space-3) var(--space-4);
+
+  color: var(--color-text-secondary);
+  background: var(--color-surface-subtle);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  font-size: var(--font-size-xs);
+}
+
+.settings-unsaved-indicator {
+  width: 0.45rem;
+  height: 0.45rem;
+
+  background: var(--color-warning);
+
+  border-radius: var(--radius-full);
+}
+
+/* =============================================================================
+   Responsive Settings
+   ============================================================================= */
+
+@media (max-width: 800px) {
+  .settings-header {
+    flex-direction: column;
+  }
+
+  .settings-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-nav {
+    position: static;
+
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .setting {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .setting-toggle {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 600px) {
+  .settings-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .theme-options {
+    grid-template-columns: 1fr;
+  }
+
+  .setting-options-3,
+  .setting-options-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .setting-option + .setting-option {
+    border-left: 0;
+    border-top: var(--border-width-thin) solid var(--color-border);
+  }
+
+  .settings-actions {
+    flex-wrap: wrap;
+  }
+
+  .settings-save-status {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .settings-danger-action {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settings-nav-button,
+  .toggle,
+  .toggle::after,
+  .setting-option,
+  .theme-option {
+    transition: none;
+  }
+}

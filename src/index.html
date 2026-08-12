@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en" data-theme="system">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <meta
+      name="description"
+      content="EduDit — a modern adaptive Morse code learning application."
+    />
+
+    <meta name="theme-color" content="#111318" />
+
+    <title>EduDit</title>
+
+    <link rel="icon" href="./icons/favicon.svg" />
+
+    <!--
+      Global styling is intentionally loaded in a predictable order:
+
+      1. Variables      → design tokens and themes
+      2. Base           → resets and typography
+      3. Layout         → application-level structure
+      4. Components     → reusable UI components
+      5. Animations     → shared motion behavior
+
+      Feature-specific styles are loaded after the shared foundation.
+    -->
+
+    <link rel="stylesheet" href="./css/variables.css" />
+    <link rel="stylesheet" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/layout.css" />
+    <link rel="stylesheet" href="./css/components.css" />
+    <link rel="stylesheet" href="./css/animations.css" />
+
+    <link rel="stylesheet" href="./css/dashboard.css" />
+    <link rel="stylesheet" href="./css/lessons.css" />
+    <link rel="stylesheet" href="./css/receive.css" />
+    <link rel="stylesheet" href="./css/send.css" />
+    <link rel="stylesheet" href="./css/progress.css" />
+    <link rel="stylesheet" href="./css/settings.css" />
+    <link rel="stylesheet" href="./css/profiles.css" />
+    <link rel="stylesheet" href="./css/keyboard.css" />
+  </head>
+
+  <body>
+    <div id="app" class="app-shell">
+      <!--
+        Application navigation.
+        The router will control the active view. Navigation elements use
+        data-route rather than hard-coded JavaScript click handlers.
+      -->
+      <aside
+        id="app-sidebar"
+        class="app-sidebar"
+        aria-label="Primary navigation"
+      >
+        <div class="sidebar-header">
+          <a
+            class="brand"
+            href="#dashboard"
+            data-route="dashboard"
+            aria-label="EduDit Dashboard"
+          >
+            <span class="brand-mark" aria-hidden="true">E</span>
+
+            <span class="brand-text">
+              <span class="brand-name">EduDit</span>
+            </span>
+          </a>
+        </div>
+
+        <nav class="primary-navigation" aria-label="Main navigation">
+          <ul class="navigation-list">
+            <li>
+              <a
+                href="#dashboard"
+                class="navigation-link"
+                data-route="dashboard"
+                aria-current="page"
+              >
+                <span class="navigation-icon" aria-hidden="true">⌂</span>
+                <span class="navigation-label">Dashboard</span>
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#lessons"
+                class="navigation-link"
+                data-route="lessons"
+              >
+                <span class="navigation-icon" aria-hidden="true">▤</span>
+                <span class="navigation-label">Lessons</span>
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#receive"
+                class="navigation-link"
+                data-route="receive"
+              >
+                <span class="navigation-icon" aria-hidden="true">◉</span>
+                <span class="navigation-label">Receive</span>
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#send"
+                class="navigation-link"
+                data-route="send"
+              >
+                <span class="navigation-icon" aria-hidden="true">⌁</span>
+                <span class="navigation-label">Send</span>
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#progress"
+                class="navigation-link"
+                data-route="progress"
+              >
+                <span class="navigation-icon" aria-hidden="true">↗</span>
+                <span class="navigation-label">Progress</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+          <a
+            href="#settings"
+            class="navigation-link"
+            data-route="settings"
+          >
+            <span class="navigation-icon" aria-hidden="true">⚙</span>
+            <span class="navigation-label">Settings</span>
+          </a>
+
+          <button
+            type="button"
+            class="profile-switcher"
+            id="profile-switcher"
+            aria-label="Switch learner"
+          >
+            <span
+              class="profile-avatar"
+              id="profile-avatar"
+              aria-hidden="true"
+            >
+              ?
+            </span>
+
+            <span class="profile-summary">
+              <span class="profile-label">Learner</span>
+              <span
+                class="profile-name"
+                id="profile-name"
+              >
+                Select profile
+              </span>
+            </span>
+          </button>
+        </div>
+      </aside>
+
+      <!--
+        Main application area.
+        Individual views are inserted here by the router.
+      -->
+      <main
+        id="main-content"
+        class="main-content"
+        tabindex="-1"
+      >
+        <div
+          id="view-container"
+          class="view-container"
+          aria-live="polite"
+        >
+          <section
+            class="app-loading"
+            aria-label="Loading EduDit"
+          >
+            <div
+              class="loading-indicator"
+              aria-hidden="true"
+            ></div>
+
+            <p>Loading EduDit…</p>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!--
+      Screen-reader status announcements.
+
+      JavaScript can update this element when navigation, training state,
+      or other important application events need to be communicated without
+      requiring the user to visually inspect the interface.
+    -->
+    <div
+      id="status-announcer"
+      class="sr-only"
+      aria-live="polite"
+      aria-atomic="true"
+    ></div>
+
+    <!--
+      Renderer entry point.
+
+      All application JavaScript begins here. Individual modules are imported
+      by the application layer rather than being added as separate script tags.
+    -->
+    <script
+      type="module"
+      src="./js/app.js"
+    ></script>
+  </body>
+</html>

@@ -1,0 +1,382 @@
+/**
+ * =============================================================================
+ * EduDit
+ * Animations
+ * =============================================================================
+ *
+ * Shared, reusable UI motion.
+ *
+ * Animation should communicate state, not decorate the application.
+ *
+ * All animations must respect prefers-reduced-motion.
+ * =============================================================================
+ */
+
+/* =============================================================================
+   Base Timing
+   ============================================================================= */
+
+:root {
+  --animation-duration-instant: 80ms;
+  --animation-duration-fast: 150ms;
+  --animation-duration-standard: 220ms;
+  --animation-duration-slow: 350ms;
+}
+
+/* =============================================================================
+   Fade
+   ============================================================================= */
+
+@keyframes edudit-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes edudit-fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.animate-fade-in {
+  animation: edudit-fade-in var(--animation-duration-standard)
+    var(--ease-standard) both;
+}
+
+.animate-fade-out {
+  animation: edudit-fade-out var(--animation-duration-standard)
+    var(--ease-standard) both;
+}
+
+/* =============================================================================
+   Subtle Slide
+   ============================================================================= */
+
+@keyframes edudit-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes edudit-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes edudit-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-up {
+  animation: edudit-slide-up var(--animation-duration-standard)
+    var(--ease-standard) both;
+}
+
+.animate-slide-down {
+  animation: edudit-slide-down var(--animation-duration-standard)
+    var(--ease-standard) both;
+}
+
+.animate-slide-in-right {
+  animation: edudit-slide-in-right var(--animation-duration-standard)
+    var(--ease-standard) both;
+}
+
+/* =============================================================================
+   Scale
+   ============================================================================= */
+
+@keyframes edudit-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: edudit-scale-in var(--animation-duration-standard)
+    var(--ease-standard) both;
+}
+
+/* =============================================================================
+   Feedback
+   ============================================================================= */
+
+@keyframes edudit-feedback-correct {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.01);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes edudit-feedback-incorrect {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-0.2rem);
+  }
+
+  75% {
+    transform: translateX(0.2rem);
+  }
+}
+
+.animate-feedback-correct {
+  animation: edudit-feedback-correct var(--animation-duration-standard)
+    var(--ease-standard) both;
+}
+
+.animate-feedback-incorrect {
+  animation: edudit-feedback-incorrect var(--animation-duration-standard)
+    var(--ease-standard) both;
+}
+
+/* =============================================================================
+   Pulse
+   ============================================================================= */
+
+@keyframes edudit-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.animate-pulse {
+  animation: edudit-pulse 1.5s var(--ease-standard) infinite;
+}
+
+/* =============================================================================
+   Loading
+   ============================================================================= */
+
+@keyframes edudit-loading {
+  0% {
+    opacity: 0.45;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.45;
+  }
+}
+
+.animate-loading {
+  animation: edudit-loading 1.2s var(--ease-standard) infinite;
+}
+
+/* =============================================================================
+   Success Indicator
+   ============================================================================= */
+
+@keyframes edudit-success {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-success {
+  animation: edudit-success var(--animation-duration-slow)
+    var(--ease-standard) both;
+}
+
+/* =============================================================================
+   Hint Reveal
+   ============================================================================= */
+
+@keyframes edudit-hint-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(0.25rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hint-reveal {
+  animation: edudit-hint-reveal var(--animation-duration-standard)
+    var(--ease-standard) both;
+}
+
+/* =============================================================================
+   Character Reveal
+   ============================================================================= */
+
+@keyframes edudit-character-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(0.35rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-character-reveal {
+  animation: edudit-character-reveal var(--animation-duration-standard)
+    var(--ease-standard) both;
+}
+
+/* =============================================================================
+   Progress
+   ============================================================================= */
+
+@keyframes edudit-progress {
+  from {
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  to {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+}
+
+.animate-progress {
+  animation: edudit-progress var(--animation-duration-slow)
+    var(--ease-standard) both;
+}
+
+/* =============================================================================
+   Stagger Support
+   ============================================================================= */
+
+.animate-stagger > * {
+  animation-delay: 0ms;
+}
+
+.animate-stagger > :nth-child(2) {
+  animation-delay: 40ms;
+}
+
+.animate-stagger > :nth-child(3) {
+  animation-delay: 80ms;
+}
+
+.animate-stagger > :nth-child(4) {
+  animation-delay: 120ms;
+}
+
+.animate-stagger > :nth-child(5) {
+  animation-delay: 160ms;
+}
+
+.animate-stagger > :nth-child(6) {
+  animation-delay: 200ms;
+}
+
+.animate-stagger > :nth-child(7) {
+  animation-delay: 240ms;
+}
+
+.animate-stagger > :nth-child(8) {
+  animation-delay: 280ms;
+}
+
+/* =============================================================================
+   Utility
+   ============================================================================= */
+
+.animation-none {
+  animation: none !important;
+}
+
+.animation-paused {
+  animation-play-state: paused !important;
+}
+
+/* =============================================================================
+   Reduced Motion
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+
+  .animate-feedback-incorrect {
+    animation: none;
+  }
+
+  .animate-pulse,
+  .animate-loading {
+    animation: none;
+  }
+}

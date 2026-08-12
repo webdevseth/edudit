@@ -1,0 +1,287 @@
+/**
+ * =============================================================================
+ * EduDit
+ * Training Keyboard
+ * =============================================================================
+ *
+ * Optional visual keyboard used during Morse receive training.
+ *
+ * Important:
+ * This keyboard is informational only. It must never reveal the currently
+ * playing answer by highlighting the correct key.
+ * =============================================================================
+ */
+
+/* =============================================================================
+   Keyboard Container
+   ============================================================================= */
+
+.training-keyboard {
+  width: 100%;
+  max-width: 54rem;
+  margin-inline: auto;
+}
+
+.training-keyboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+
+  margin-bottom: var(--space-3);
+}
+
+.training-keyboard-title {
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+.training-keyboard-description {
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-2xs);
+}
+
+/* =============================================================================
+   Keyboard
+   ============================================================================= */
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  width: 100%;
+
+  padding: var(--space-3);
+
+  background: var(--color-surface);
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-sm);
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+
+  width: 100%;
+}
+
+/* =============================================================================
+   Keys
+   ============================================================================= */
+
+.keyboard-key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: clamp(2rem, 6vw, 3.25rem);
+  height: clamp(2rem, 5vw, 3rem);
+
+  padding: 0;
+
+  color: var(--color-text-tertiary);
+  background: var(--color-surface-subtle);
+
+  border: var(--border-width-thin) solid var(--color-border);
+  border-radius: var(--radius-sm);
+
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+
+  user-select: none;
+
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+/*
+ * Learned / available characters.
+ *
+ * This state communicates vocabulary availability only.
+ * It must not be confused with an answer state.
+ */
+.keyboard-key-known {
+  color: var(--color-text-primary);
+  background: var(--color-surface-raised);
+
+  border-color: var(--color-border-strong);
+}
+
+/*
+ * Characters not yet available to the learner.
+ */
+.keyboard-key-unknown {
+  color: var(--color-text-disabled);
+  background: var(--color-surface-subtle);
+
+  border-color: var(--color-border);
+  opacity: var(--opacity-disabled);
+}
+
+/*
+ * Character included somewhere in the current training vocabulary.
+ *
+ * This is deliberately subtle. It tells the learner what is in the
+ * vocabulary without indicating which character is currently playing.
+ */
+.keyboard-key-in-training {
+  color: var(--color-text-primary);
+  border-color: var(--color-accent-border);
+}
+
+/*
+ * Optional keyboard interaction state.
+ *
+ * This may be used when the keyboard is actually receiving physical keyboard
+ * input during Send training. It must never be used to reveal the Receive
+ * answer.
+ */
+.keyboard-key-pressed {
+  color: var(--color-text-primary);
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent);
+
+  transform: translateY(1px);
+}
+
+/* =============================================================================
+   Keyboard Legend
+   ============================================================================= */
+
+.keyboard-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+
+  margin-top: var(--space-3);
+}
+
+.keyboard-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  color: var(--color-text-tertiary);
+
+  font-size: var(--font-size-2xs);
+}
+
+.keyboard-legend-indicator {
+  width: 0.5rem;
+  height: 0.5rem;
+
+  border-radius: var(--radius-sm);
+}
+
+.keyboard-legend-indicator-known {
+  background: var(--color-surface-raised);
+  border: var(--border-width-thin) solid var(--color-border-strong);
+}
+
+.keyboard-legend-indicator-unknown {
+  background: var(--color-surface-subtle);
+  border: var(--border-width-thin) solid var(--color-border);
+}
+
+/* =============================================================================
+   Compact Keyboard
+   ============================================================================= */
+
+.keyboard-compact {
+  padding: var(--space-2);
+
+  border-radius: var(--radius-md);
+}
+
+.keyboard-compact .keyboard-row {
+  gap: var(--space-1);
+}
+
+.keyboard-compact .keyboard-key {
+  width: clamp(1.75rem, 4vw, 2.5rem);
+  height: clamp(1.75rem, 4vw, 2.25rem);
+
+  border-radius: var(--radius-xs);
+
+  font-size: var(--font-size-2xs);
+}
+
+/* =============================================================================
+   Keyboard Hidden State
+   ============================================================================= */
+
+.training-keyboard-hidden {
+  display: none;
+}
+
+/* =============================================================================
+   Responsive
+   ============================================================================= */
+
+@media (max-width: 600px) {
+  .keyboard {
+    padding: var(--space-2);
+  }
+
+  .keyboard-row {
+    gap: var(--space-1);
+  }
+
+  .keyboard-key {
+    width: clamp(1.75rem, 8vw, 2.5rem);
+    height: clamp(1.75rem, 7vw, 2.5rem);
+
+    border-radius: var(--radius-xs);
+  }
+
+  .training-keyboard-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+}
+
+@media (max-width: 420px) {
+  .keyboard {
+    padding: var(--space-1);
+  }
+
+  .keyboard-row {
+    gap: 0.125rem;
+  }
+
+  .keyboard-key {
+    width: clamp(1.55rem, 8.5vw, 2rem);
+    height: clamp(1.55rem, 8vw, 2rem);
+
+    font-size: 0.625rem;
+  }
+
+  .keyboard-legend {
+    gap: var(--space-2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .keyboard-key {
+    transition: none;
+  }
+
+  .keyboard-key-pressed {
+    transform: none;
+  }
+}
