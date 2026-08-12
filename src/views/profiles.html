@@ -1,0 +1,160 @@
+<section class="profiles" data-feature="profiles">
+  <header class="profiles-header">
+    <div class="profiles-header-content">
+      <h1 class="profiles-title">Learners</h1>
+
+      <p class="profiles-description">
+        Each learner has their own progress, mastery, training history, and
+        preferences.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="button button-primary"
+      data-profile-action="show-create"
+    >
+      Add learner
+    </button>
+  </header>
+
+  <!--
+    Create / rename form.
+    The feature module controls visibility and submission.
+  -->
+  <section
+    class="profile-form-card surface-card"
+    data-profile-form-container
+    hidden
+    aria-labelledby="profile-form-title"
+  >
+    <div class="section-header">
+      <div>
+        <h2
+          id="profile-form-title"
+          class="section-title"
+          data-profile-form-title
+        >
+          Add learner
+        </h2>
+
+        <p
+          class="section-description"
+          data-profile-form-description
+        >
+          Create a learner profile to keep training progress separate.
+        </p>
+      </div>
+    </div>
+
+    <form
+      class="profile-form"
+      data-profile-form
+      novalidate
+    >
+      <div class="profile-form-avatar">
+        <span
+          class="profile-avatar profile-avatar-large"
+          data-profile-form-avatar
+          aria-hidden="true"
+        >
+          ?
+        </span>
+      </div>
+
+      <div class="profile-form-field">
+        <label
+          class="profile-form-label"
+          for="profile-name-input"
+        >
+          Learner name
+        </label>
+
+        <input
+          id="profile-name-input"
+          class="input"
+          name="name"
+          type="text"
+          maxlength="40"
+          autocomplete="off"
+          required
+          placeholder="e.g. Seth"
+          data-profile-name-input
+        />
+
+        <p class="profile-form-help">
+          This name is only used to identify the learner on this computer.
+        </p>
+
+        <p
+          class="form-error"
+          data-profile-form-error
+          role="alert"
+          hidden
+        ></p>
+      </div>
+
+      <div class="profile-form-actions">
+        <button
+          type="button"
+          class="button button-secondary"
+          data-profile-action="cancel-form"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="button button-primary"
+          data-profile-action="submit-form"
+        >
+          Create learner
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!--
+    Profiles are rendered here by the feature module.
+  -->
+  <section
+    class="profile-grid"
+    data-profile-grid
+    aria-live="polite"
+    aria-label="Learner profiles"
+  ></section>
+
+  <!--
+    Empty state is retained in the view so the feature can reveal it without
+    constructing an entirely separate page.
+  -->
+  <section
+    class="profiles-empty"
+    data-profile-empty
+    hidden
+  >
+    <div
+      class="profiles-empty-icon"
+      aria-hidden="true"
+    >
+      +
+    </div>
+
+    <h2 class="profiles-empty-title">
+      No learners yet
+    </h2>
+
+    <p class="profiles-empty-description">
+      Create a learner profile to begin building an independent Morse-code
+      learning history.
+    </p>
+
+    <button
+      type="button"
+      class="button button-primary"
+      data-profile-action="show-create"
+    >
+      Add first learner
+    </button>
+  </section>
+</section>
