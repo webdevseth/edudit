@@ -1,0 +1,263 @@
+<section class="view lessons" data-feature="lessons">
+  <header class="page-header">
+    <div class="page-header-content">
+      <p class="eyebrow">Curriculum</p>
+
+      <h1 class="page-title">Lessons</h1>
+
+      <p class="page-description">
+        Practice the characters you've unlocked and explore what comes next.
+      </p>
+    </div>
+  </header>
+
+  <!-- Curriculum overview -->
+  <section class="lessons-summary" data-lessons-summary>
+    <div class="lessons-summary-content">
+      <p class="eyebrow">Your progress</p>
+
+      <h2 class="lessons-summary-title" data-lessons-summary-title>
+        Getting started
+      </h2>
+
+      <p
+        class="lessons-summary-description"
+        data-lessons-summary-description
+      >
+        Build recognition one character at a time. Previously unlocked
+        material remains available for review.
+      </p>
+    </div>
+
+    <div
+      class="lessons-summary-progress"
+      data-lessons-summary-progress
+    >
+      <div class="progress">
+        <div
+          class="progress-bar"
+          data-lessons-summary-progress-bar
+          role="progressbar"
+          aria-label="Character curriculum progress"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+        ></div>
+      </div>
+
+      <p
+        class="text-muted text-small"
+        data-lessons-summary-progress-label
+      >
+        0 of 26 characters
+      </p>
+    </div>
+  </section>
+
+  <!-- Material navigation -->
+  <section class="curriculum-section">
+    <div class="curriculum-section-header">
+      <div>
+        <p class="eyebrow">Learning path</p>
+
+        <h2 class="curriculum-section-title">
+          Curriculum
+        </h2>
+
+        <p class="curriculum-section-description">
+          Choose what you want to practice.
+        </p>
+      </div>
+
+      <div
+        class="material-tabs"
+        role="tablist"
+        aria-label="Curriculum material"
+        data-material-tabs
+      >
+        <button
+          type="button"
+          class="material-tab material-tab-active"
+          role="tab"
+          aria-selected="true"
+          aria-controls="characters-panel"
+          data-material-tab="characters"
+        >
+          Characters
+        </button>
+
+        <button
+          type="button"
+          class="material-tab"
+          role="tab"
+          aria-selected="false"
+          aria-controls="numbers-panel"
+          data-material-tab="numbers"
+        >
+          Numbers
+        </button>
+
+        <button
+          type="button"
+          class="material-tab"
+          role="tab"
+          aria-selected="false"
+          aria-controls="punctuation-panel"
+          data-material-tab="punctuation"
+        >
+          Punctuation
+        </button>
+
+        <button
+          type="button"
+          class="material-tab"
+          role="tab"
+          aria-selected="false"
+          aria-controls="words-panel"
+          data-material-tab="words"
+        >
+          Words
+        </button>
+      </div>
+    </div>
+
+    <!-- Characters -->
+    <div
+      id="characters-panel"
+      role="tabpanel"
+      data-material-panel="characters"
+    >
+      <div
+        class="lesson-grid"
+        data-character-lessons
+      ></div>
+
+      <div
+        class="lessons-empty"
+        data-character-lessons-empty
+        hidden
+      >
+        <h3 class="lessons-empty-title">
+          No character lessons yet
+        </h3>
+
+        <p class="lessons-empty-description">
+          Character curriculum data could not be loaded.
+        </p>
+      </div>
+    </div>
+
+    <!-- Numbers -->
+    <div
+      id="numbers-panel"
+      role="tabpanel"
+      data-material-panel="numbers"
+      hidden
+    >
+      <div class="future-content">
+        <h3 class="future-content-title">
+          Numbers are coming next
+        </h3>
+
+        <p class="future-content-description">
+          Number training will become available after the character
+          curriculum is established. Your progress will carry forward
+          automatically.
+        </p>
+      </div>
+    </div>
+
+    <!-- Punctuation -->
+    <div
+      id="punctuation-panel"
+      role="tabpanel"
+      data-material-panel="punctuation"
+      hidden
+    >
+      <div class="future-content">
+        <h3 class="future-content-title">
+          Punctuation is coming next
+        </h3>
+
+        <p class="future-content-description">
+          Common punctuation will be introduced after the core character
+          curriculum is established.
+        </p>
+      </div>
+    </div>
+
+    <!-- Words -->
+    <div
+      id="words-panel"
+      role="tabpanel"
+      data-material-panel="words"
+      hidden
+    >
+      <div class="future-content">
+        <h3 class="future-content-title">
+          Word training is coming next
+        </h3>
+
+        <p class="future-content-description">
+          Word practice will become available as your character recognition
+          develops.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Future curriculum -->
+  <section
+    class="curriculum-section"
+    data-future-curriculum
+  >
+    <div class="curriculum-section-header">
+      <div>
+        <p class="eyebrow">Coming later</p>
+
+        <h2 class="curriculum-section-title">
+          More ways to learn
+        </h2>
+
+        <p class="curriculum-section-description">
+          EduDit will expand beyond individual character recognition as
+          your skills develop.
+        </p>
+      </div>
+    </div>
+
+    <div class="lesson-grid">
+      <article class="future-content">
+        <h3 class="future-content-title">
+          Mixed character practice
+        </h3>
+
+        <p class="future-content-description">
+          Combine learned characters into increasingly natural listening
+          exercises.
+        </p>
+      </article>
+
+      <article class="future-content">
+        <h3 class="future-content-title">
+          Words
+        </h3>
+
+        <p class="future-content-description">
+          Listen to complete words constructed from characters you know.
+        </p>
+      </article>
+
+      <article class="future-content">
+        <h3 class="future-content-title">
+          Practical Morse
+        </h3>
+
+        <p class="future-content-description">
+          Eventually move from structured lessons toward realistic Morse
+          communication.
+        </p>
+      </article>
+    </div>
+  </section>
+</section>
