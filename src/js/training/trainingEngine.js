@@ -6,13 +6,19 @@
  *
  * Central orchestrator for learner training sessions.
  *
- * The training engine coordinates:
+ * The Training Engine owns runtime training behavior.
  *
- * - Session lifecycle
+ * The Session Model remains the canonical representation of the persisted
+ * session itself.
+ *
+ * Responsibilities:
+ *
+ * - Session lifecycle orchestration
  * - Attempt lifecycle
- * - Training targets
+ * - Training target context
  * - Answer evaluation
  * - Training mode
+ * - Runtime session metrics
  * - Training state
  * - Event notifications
  *
@@ -26,20 +32,6 @@
  * - UI rendering
  *
  * Those responsibilities belong to their respective modules.
- *
- * Lifecycle:
- *
- *   create → start → attempt → answer → next attempt
- *                         ↓
- *                     pause/resume
- *                         ↓
- *                       stop
- *                         ↓
- *                     complete
- *
- * Every training instance can be cleanly stopped and destroyed when its view
- * is unmounted. This prevents stale timers, listeners, or sessions from
- * surviving navigation.
  * =============================================================================
  */
 
@@ -47,26 +39,28 @@ import events, {
   EVENT_NAMES,
 } from "../core/events.js";
 
+import {
+  createSession as createSessionModel,
+  startSession as startSessionModel,
+  pauseSession as pauseSessionModel,
+  resumeSession as resumeSessionModel,
+  completeSession as completeSessionModel,
+  abandonSession as abandonSessionModel,
+  addAttempt as addSessionAttempt,
+} from "../models/session.js";
+
+
 /* =============================================================================
    Constants
    ============================================================================= */
 
-/**
- * Supported training modes.
- *
- * Adaptive is the default and recommended mode.
- */
 const TRAINING_MODES = Object.freeze({
   ADAPTIVE: "adaptive",
   SEQUENTIAL: "sequential",
   REVIEW_ONLY: "review-only",
 });
 
-/**
- * Supported training states.
- *
- * A training instance may occupy only one state at a time.
- */
+
 const TRAINING_STATES = Object.freeze({
   IDLE: "idle",
   RUNNING: "running",
@@ -76,28 +70,18 @@ const TRAINING_STATES = Object.freeze({
   DESTROYED: "destroyed",
 });
 
-/**
- * Default training configuration.
- */
+
 const DEFAULT_TRAINING_OPTIONS =
   Object.freeze({
     mode: TRAINING_MODES.ADAPTIVE,
     sessionLength: 20,
   });
 
+
 /* =============================================================================
    Utilities
    ============================================================================= */
 
-/**
- * Generate a reasonably unique session/attempt identifier.
- *
- * The persistence layer may eventually replace this with a stronger ID
- * strategy. For now, this keeps the training engine independent of storage.
- *
- * @param {string} prefix
- * @returns {string}
- */
 function createId(prefix) {
   const timestamp =
     Date.now().toString(36);
@@ -110,26 +94,12 @@ function createId(prefix) {
   return `${prefix}-${timestamp}-${random}`;
 }
 
-/**
- * Return the current timestamp.
- *
- * Kept behind a function so tests can mock time cleanly.
- *
- * @returns {number}
- */
+
 function now() {
   return Date.now();
 }
 
-/**
- * Normalize a learner answer.
- *
- * Receive training is intentionally forgiving about surrounding whitespace
- * and letter case.
- *
- * @param {*} answer
- * @returns {string}
- */
+
 function normalizeAnswer(answer) {
   if (
     typeof answer !== "string"
@@ -142,17 +112,13 @@ function normalizeAnswer(answer) {
     .toUpperCase();
 }
 
-/**
- * Determine whether a value is a supported training mode.
- *
- * @param {*} mode
- * @returns {boolean}
- */
+
 function isValidTrainingMode(mode) {
   return Object.values(
     TRAINING_MODES,
   ).includes(mode);
 }
+
 
 /* =============================================================================
    Training Engine
@@ -161,7 +127,36 @@ function isValidTrainingMode(mode) {
 class TrainingEngine {
   #profileId = null;
 
+  /*
+   * The canonical Session Model.
+   *
+   * This object contains the persisted session representation:
+   *
+   * - id
+   * - profileId
+   * - direction
+   * - status
+   * - targetAttempts
+   * - timestamps
+   * - attemptIds
+   * - material
+   */
   #session = null;
+
+  /*
+   * Runtime-only information belongs to the engine rather than the Session
+   * Model.
+   */
+  #sessionContext = {
+    mode: DEFAULT_TRAINING_OPTIONS.mode,
+    target: null,
+    attempts: [],
+    correct: 0,
+    total: 0,
+    accuracy: 0,
+    totalResponseTimeMs: 0,
+    averageResponseTimeMs: 0,
+  };
 
   #state = TRAINING_STATES.IDLE;
 
@@ -175,18 +170,11 @@ class TrainingEngine {
 
   #onBeforeUnload = null;
 
+
   /* ===========================================================================
      Initialization
      =========================================================================== */
 
-  /**
-   * Create a training engine for a learner profile.
-   *
-   * @param {Object} options
-   * @param {string} options.profileId
-   * @param {string} [options.mode]
-   * @param {number} [options.sessionLength]
-   */
   constructor({
     profileId,
     mode = DEFAULT_TRAINING_OPTIONS.mode,
@@ -230,24 +218,16 @@ class TrainingEngine {
     this.#installLifecycleHandlers();
   }
 
+
   /* ===========================================================================
      State
      =========================================================================== */
 
-  /**
-   * Return the current training state.
-   *
-   * @returns {string}
-   */
   getState() {
     return this.#state;
   }
 
-  /**
-   * Determine whether the engine is currently active.
-   *
-   * @returns {boolean}
-   */
+
   isRunning() {
     return (
       this.#state ===
@@ -255,11 +235,7 @@ class TrainingEngine {
     );
   }
 
-  /**
-   * Determine whether the engine is paused.
-   *
-   * @returns {boolean}
-   */
+
   isPaused() {
     return (
       this.#state ===
@@ -267,35 +243,29 @@ class TrainingEngine {
     );
   }
 
-  /**
-   * Determine whether the engine has been destroyed.
-   *
-   * @returns {boolean}
-   */
+
   isDestroyed() {
     return this.#destroyed;
   }
 
-  /**
-   * Return the profile associated with this engine.
-   *
-   * @returns {string}
-   */
+
   getProfileId() {
     return this.#profileId;
   }
 
-  /**
-   * Return the current training mode.
-   *
-   * @returns {string}
-   */
+
   getMode() {
     return this.#options.mode;
   }
 
+
   /**
-   * Return a defensive snapshot of the current session.
+   * Return a defensive public snapshot.
+   *
+   * The Session Model fields are exposed directly because sessionService and
+   * state management consume the snapshot as a session object.
+   *
+   * Runtime-only engine metrics are deliberately added as a separate layer.
    *
    * @returns {Object|null}
    */
@@ -306,20 +276,44 @@ class TrainingEngine {
 
     return {
       ...this.#session,
+
+      mode:
+        this.#sessionContext.mode,
+
+      target:
+        this.#sessionContext.target
+          ? {
+              ...this.#sessionContext.target,
+            }
+          : null,
+
       attempts:
-        this.#session.attempts.map(
+        this.#sessionContext.attempts.map(
           (attempt) => ({
             ...attempt,
           }),
         ),
+
+      correct:
+        this.#sessionContext.correct,
+
+      total:
+        this.#sessionContext.total,
+
+      accuracy:
+        this.#sessionContext.accuracy,
+
+      totalResponseTimeMs:
+        this.#sessionContext
+          .totalResponseTimeMs,
+
+      averageResponseTimeMs:
+        this.#sessionContext
+          .averageResponseTimeMs,
     };
   }
 
-  /**
-   * Return the current attempt snapshot.
-   *
-   * @returns {Object|null}
-   */
+
   getCurrentAttempt() {
     if (!this.#currentAttempt) {
       return null;
@@ -330,19 +324,11 @@ class TrainingEngine {
     };
   }
 
+
   /* ===========================================================================
      Session Lifecycle
      =========================================================================== */
 
-  /**
-   * Start a new training session.
-   *
-   * The actual training target should be supplied by the adaptive/progression
-   * layer or the feature that launches the session.
-   *
-   * @param {Object} target
-   * @returns {Object} session snapshot
-   */
   start({
     target = null,
   } = {}) {
@@ -366,23 +352,51 @@ class TrainingEngine {
       );
     }
 
-    this.#session = {
-      id: createId("session"),
+    const startedAt =
+      now();
 
-      profileId:
-        this.#profileId,
+    const direction =
+      target?.direction === "send"
+        ? "send"
+        : "receive";
 
+    this.#session =
+      createSessionModel({
+        id:
+          createId("session"),
+
+        profileId:
+          this.#profileId,
+
+        direction,
+
+        targetAttempts:
+          this.#options.sessionLength,
+
+        startedAt,
+
+        material:
+          target
+            ? [target]
+            : [],
+      });
+
+    this.#session =
+      startSessionModel(
+        this.#session,
+        startedAt,
+      );
+
+    this.#sessionContext = {
       mode:
         this.#options.mode,
 
       target:
         target
-          ? { ...target }
+          ? {
+              ...target,
+            }
           : null,
-
-      startedAt: now(),
-
-      endedAt: null,
 
       attempts: [],
 
@@ -397,7 +411,8 @@ class TrainingEngine {
       averageResponseTimeMs: 0,
     };
 
-    this.#currentAttempt = null;
+    this.#currentAttempt =
+      null;
 
     this.#state =
       TRAINING_STATES.RUNNING;
@@ -410,11 +425,7 @@ class TrainingEngine {
     return this.getSessionSnapshot();
   }
 
-  /**
-   * Pause the current training session.
-   *
-   * @returns {Object|null}
-   */
+
   pause() {
     this.#assertUsable();
 
@@ -426,12 +437,16 @@ class TrainingEngine {
     }
 
     /*
-     * An active attempt must not remain open while paused.
-     *
-     * The feature layer can decide whether to abandon or restore that attempt
-     * when training resumes.
+     * An active attempt cannot remain open across a pause.
      */
-    this.#currentAttempt = null;
+    this.#currentAttempt =
+      null;
+
+    this.#session =
+      pauseSessionModel(
+        this.#session,
+        now(),
+      );
 
     this.#state =
       TRAINING_STATES.PAUSED;
@@ -444,11 +459,7 @@ class TrainingEngine {
     return this.getSessionSnapshot();
   }
 
-  /**
-   * Resume a paused training session.
-   *
-   * @returns {Object|null}
-   */
+
   resume() {
     this.#assertUsable();
 
@@ -458,6 +469,11 @@ class TrainingEngine {
     ) {
       return this.getSessionSnapshot();
     }
+
+    this.#session =
+      resumeSessionModel(
+        this.#session,
+      );
 
     this.#state =
       TRAINING_STATES.RUNNING;
@@ -470,13 +486,7 @@ class TrainingEngine {
     return this.getSessionSnapshot();
   }
 
-  /**
-   * Stop the current session without marking it as successfully completed.
-   *
-   * The session remains available as a partial session for persistence.
-   *
-   * @returns {Object|null}
-   */
+
   stop() {
     this.#assertUsable();
 
@@ -492,10 +502,13 @@ class TrainingEngine {
       return this.getSessionSnapshot();
     }
 
-    this.#currentAttempt = null;
+    this.#currentAttempt =
+      null;
 
-    this.#session.endedAt =
-      now();
+    this.#session =
+      abandonSessionModel(
+        this.#session,
+      );
 
     this.#state =
       TRAINING_STATES.STOPPED;
@@ -508,17 +521,11 @@ class TrainingEngine {
     return this.getSessionSnapshot();
   }
 
-  /**
-   * Complete the current session.
-   *
-   * @returns {Object|null}
-   */
+
   complete() {
     this.#assertUsable();
 
-    if (
-      !this.#session
-    ) {
+    if (!this.#session) {
       return null;
     }
 
@@ -536,10 +543,14 @@ class TrainingEngine {
       return this.getSessionSnapshot();
     }
 
-    this.#currentAttempt = null;
+    this.#currentAttempt =
+      null;
 
-    this.#session.endedAt =
-      now();
+    this.#session =
+      completeSessionModel(
+        this.#session,
+        now(),
+      );
 
     this.#recalculateSessionMetrics();
 
@@ -554,24 +565,11 @@ class TrainingEngine {
     return this.getSessionSnapshot();
   }
 
+
   /* ===========================================================================
      Attempt Lifecycle
      =========================================================================== */
 
-  /**
-   * Begin an attempt.
-   *
-   * The caller supplies the expected answer and optional curriculum metadata.
-   *
-   * The actual Morse audio engine is responsible for playing the audio.
-   * Response timing begins when this method is called.
-   *
-   * @param {Object} options
-   * @param {string} options.expected
-   * @param {Object|null} [options.item]
-   * @param {Object|null} [options.metadata]
-   * @returns {Object}
-   */
   startAttempt({
     expected,
     item = null,
@@ -600,7 +598,8 @@ class TrainingEngine {
     }
 
     const attempt = {
-      id: createId("attempt"),
+      id:
+        createId("attempt"),
 
       sessionId:
         this.#session.id,
@@ -611,25 +610,37 @@ class TrainingEngine {
       expected:
         normalizedExpected,
 
-      answer: null,
+      answer:
+        null,
 
-      correct: false,
+      correct:
+        false,
 
-      responseTimeMs: null,
+      responseTimeMs:
+        null,
 
-      hintUsed: false,
+      hintUsed:
+        false,
 
-      startedAt: now(),
+      startedAt:
+        now(),
 
-      completedAt: null,
+      completedAt:
+        null,
 
-      item: item
-        ? { ...item }
-        : null,
+      item:
+        item
+          ? {
+              ...item,
+            }
+          : null,
 
-      metadata: metadata
-        ? { ...metadata }
-        : null,
+      metadata:
+        metadata
+          ? {
+              ...metadata,
+            }
+          : null,
     };
 
     this.#currentAttempt =
@@ -647,11 +658,7 @@ class TrainingEngine {
     };
   }
 
-  /**
-   * Record that the current attempt used a hint.
-   *
-   * @returns {Object|null}
-   */
+
   markHintUsed() {
     this.#assertRunning();
 
@@ -669,14 +676,7 @@ class TrainingEngine {
     };
   }
 
-  /**
-   * Complete the current attempt with the learner's answer.
-   *
-   * Response time is measured from startAttempt() until this method is called.
-   *
-   * @param {string} answer
-   * @returns {Object}
-   */
+
   submitAnswer(answer) {
     this.#assertRunning();
 
@@ -719,17 +719,30 @@ class TrainingEngine {
       completedAt,
     };
 
-    this.#session.attempts.push(
+    /*
+     * Runtime attempt history belongs to the engine.
+     */
+    this.#sessionContext.attempts.push(
       completedAttempt,
     );
 
-    this.#session.total += 1;
+    /*
+     * The Session Model stores only the relationship to the attempt.
+     */
+    this.#session =
+      addSessionAttempt(
+        this.#session,
+        completedAttempt.id,
+      );
+
+    this.#sessionContext.total += 1;
 
     if (correct) {
-      this.#session.correct += 1;
+      this.#sessionContext.correct += 1;
     }
 
-    this.#session.totalResponseTimeMs +=
+    this.#sessionContext
+      .totalResponseTimeMs +=
       responseTimeMs;
 
     this.#recalculateSessionMetrics();
@@ -751,48 +764,33 @@ class TrainingEngine {
     };
   }
 
+
   /* ===========================================================================
      Session Metrics
      =========================================================================== */
 
-  /**
-   * Recalculate aggregate session metrics.
-   *
-   * This is intentionally simple. More sophisticated analytics belong in the
-   * learner statistics/adaptive layers.
-   *
-   * @private
-   */
   #recalculateSessionMetrics() {
-    if (!this.#session) {
-      return;
-    }
-
     const total =
-      this.#session.total;
+      this.#sessionContext.total;
 
     const correct =
-      this.#session.correct;
+      this.#sessionContext.correct;
 
-    this.#session.accuracy =
+    this.#sessionContext.accuracy =
       total > 0
         ? correct / total
         : 0;
 
-    this.#session.averageResponseTimeMs =
+    this.#sessionContext
+      .averageResponseTimeMs =
       total > 0
-        ? this.#session
+        ? this.#sessionContext
             .totalResponseTimeMs /
           total
         : 0;
   }
 
-  /**
-   * Complete the session automatically once its configured attempt count has
-   * been reached.
-   *
-   * @private
-   */
+
   #checkAutomaticCompletion() {
     if (
       !this.#session ||
@@ -803,35 +801,25 @@ class TrainingEngine {
     }
 
     if (
-      this.#session.total >=
+      this.#sessionContext.total >=
       this.#options.sessionLength
     ) {
       this.complete();
     }
   }
 
+
   /* ===========================================================================
      Configuration
      =========================================================================== */
 
-  /**
-   * Return a defensive copy of the current training options.
-   *
-   * @returns {Object}
-   */
   getOptions() {
     return {
       ...this.#options,
     };
   }
 
-  /**
-   * Update configuration.
-   *
-   * Configuration changes are allowed only when no active session exists.
-   *
-   * @param {Object} options
-   */
+
   setOptions({
     mode = this.#options.mode,
     sessionLength =
@@ -876,18 +864,11 @@ class TrainingEngine {
     };
   }
 
+
   /* ===========================================================================
      Lifecycle Cleanup
      =========================================================================== */
 
-  /**
-   * Install application lifecycle protection.
-   *
-   * This does not persist data itself. It ensures the training engine cannot
-   * accidentally remain active when the browser window is being unloaded.
-   *
-   * @private
-   */
   #installLifecycleHandlers() {
     if (
       typeof window ===
@@ -914,14 +895,7 @@ class TrainingEngine {
     );
   }
 
-  /**
-   * Destroy the training engine.
-   *
-   * This is the final lifecycle stage and is intended to be called when the
-   * Receive/Send feature is unmounted.
-   *
-   * @returns {Object|null}
-   */
+
   destroy() {
     if (this.#destroyed) {
       return null;
@@ -953,23 +927,41 @@ class TrainingEngine {
     this.#currentAttempt =
       null;
 
-    this.#session = null;
+    this.#session =
+      null;
+
+    this.#sessionContext = {
+      mode:
+        DEFAULT_TRAINING_OPTIONS.mode,
+
+      target:
+        null,
+
+      attempts: [],
+
+      correct: 0,
+
+      total: 0,
+
+      accuracy: 0,
+
+      totalResponseTimeMs: 0,
+
+      averageResponseTimeMs: 0,
+    };
 
     this.#state =
       TRAINING_STATES.DESTROYED;
 
-    this.#destroyed = true;
+    this.#destroyed =
+      true;
   }
+
 
   /* ===========================================================================
      Assertions
      =========================================================================== */
 
-  /**
-   * Ensure the engine has not been destroyed.
-   *
-   * @private
-   */
   #assertUsable() {
     if (this.#destroyed) {
       throw new Error(
@@ -978,11 +970,7 @@ class TrainingEngine {
     }
   }
 
-  /**
-   * Ensure the engine is currently running.
-   *
-   * @private
-   */
+
   #assertRunning() {
     this.#assertUsable();
 
@@ -997,19 +985,11 @@ class TrainingEngine {
   }
 }
 
+
 /* =============================================================================
    Factory
    ============================================================================= */
 
-/**
- * Create a training engine for a profile.
- *
- * A factory keeps feature modules from needing to know the constructor
- * implementation.
- *
- * @param {Object} options
- * @returns {TrainingEngine}
- */
 function createTrainingEngine(
   options,
 ) {
@@ -1017,6 +997,7 @@ function createTrainingEngine(
     options,
   );
 }
+
 
 /* =============================================================================
    Exports
