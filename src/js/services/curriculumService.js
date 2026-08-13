@@ -34,12 +34,7 @@
    Imports
    ============================================================================= */
 
-import curriculum, {
-  getCurriculum,
-  getCharacterCurriculum,
-  getPunctuationCurriculum,
-  getWordCurriculum,
-} from "../curriculum/curriculum.js";
+import curriculum from "../curriculum/curriculum.js";
 
 import * as characters from "../curriculum/characters.js";
 import * as punctuation from "../curriculum/punctuation.js";
@@ -168,11 +163,7 @@ function findInCollection(
  * @returns {Array|Object}
  */
 function getAllCurriculum() {
-  return clone(
-    typeof getCurriculum === "function"
-      ? getCurriculum()
-      : curriculum,
-  );
+  return clone(curriculum);
 }
 
 

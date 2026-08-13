@@ -48,6 +48,13 @@ const EVENT_NAMES = Object.freeze({
   PROFILE_UPDATED: "profile:updated",
   PROFILE_DELETED: "profile:deleted",
   PROFILE_SWITCHING: "profile:switching",
+  PROFILE_CHANGED: "profile:changed",
+
+  // ===========================================================================
+// Application State
+// ===========================================================================
+
+STATE_CHANGED: "state:changed",
 
   // ===========================================================================
   // Settings

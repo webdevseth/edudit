@@ -29,7 +29,9 @@
 import curriculumService from "../services/curriculumService.js";
 import state from "../core/state.js";
 import router from "../core/router.js";
-import events from "../core/events.js";
+import events, {
+  EVENT_NAMES,
+} from "../core/events.js";
 
 
 /* =============================================================================
@@ -70,10 +72,7 @@ const SELECTORS = Object.freeze({
 });
 
 
-const EVENT_NAMES = Object.freeze({
-  STATE_CHANGED: "state:changed",
-  PROFILE_CHANGED: "profile:changed",
-});
+
 
 
 const DEFAULT_SUMMARY = Object.freeze({

@@ -58,6 +58,11 @@ import settingsFeature from "./features/settings.js";
 
 import profilesFeature from "./features/profiles.js";
 
+import curriculum from "./curriculum/curriculum.js";
+
+import morseData from "../data/morse.json" with { type: "json" };
+import wordsData from "../data/words.json" with { type: "json" };
+
 
 /* =============================================================================
    Application State
@@ -251,6 +256,75 @@ function initializeTheme() {
   );
 }
 
+/* =============================================================================
+   Curriculum Initialization
+   ============================================================================= */
+
+async function initializeCurriculum() {
+const morse = morseData;
+const words = wordsData;
+
+
+  const letters =
+    Object.entries(morse.letters)
+      .map(([symbol, morseCode]) => ({
+        id: `letter-${symbol}`,
+        symbol,
+        morse: morseCode,
+        category: "letters",
+        difficulty: 1,
+      }));
+
+
+  const numbers =
+    Object.entries(morse.numbers)
+      .map(([symbol, morseCode]) => ({
+        id: `number-${symbol}`,
+        symbol,
+        morse: morseCode,
+        category: "numbers",
+        difficulty: 1,
+      }));
+
+
+  const punctuation =
+    Object.entries(morse.punctuation)
+      .map(([symbol, morseCode]) => ({
+        id: `punctuation-${symbol}`,
+        symbol,
+        morse: morseCode,
+        category: "punctuation",
+        difficulty: 1,
+      }));
+
+
+  curriculum.initialize({
+    version: 1,
+
+    categories: {
+      letters,
+      numbers,
+      punctuation,
+
+      words:
+  words.words.map((word) => ({
+    id: word.id,
+    symbol: word.text,
+    morse: word.characters
+      .map(
+        (character) =>
+          morse.letters[character],
+      )
+      .join(" "),
+    category: "words",
+    difficulty: word.difficulty,
+  })),
+
+      phrases: [],
+    },
+  });
+}
+
 
 /* =============================================================================
    Application Initialization
@@ -277,6 +351,8 @@ async function initialize() {
     registerCleanup(
       () => storage.shutdown(),
     );
+
+    await initializeCurriculum();
 
     /*
      * Establish the learner context before feature modules start.
