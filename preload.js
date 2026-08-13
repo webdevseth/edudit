@@ -25,12 +25,10 @@
  * =============================================================================
  */
 
-import {
+const {
   contextBridge,
   ipcRenderer,
-} from 'electron';
-
-import { APP } from './src/constants/app.js';
+} = require("electron");
 
 
 /* =============================================================================
@@ -92,7 +90,7 @@ function validateStorageValue(value) {
 const eduditAPI = Object.freeze({
   app: Object.freeze({
     getVersion: () =>
-      APP.version,
+  "0.1.0",
   }),
 
 

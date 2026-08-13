@@ -41,9 +41,9 @@ import curriculum, {
   getWordCurriculum,
 } from "../curriculum/curriculum.js";
 
-import characters from "../curriculum/characters.js";
-import punctuation from "../curriculum/punctuation.js";
-import words from "../curriculum/words.js";
+import * as characters from "../curriculum/characters.js";
+import * as punctuation from "../curriculum/punctuation.js";
+import * as words from "../curriculum/words.js";
 
 
 /* =============================================================================
