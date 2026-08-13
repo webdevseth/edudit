@@ -253,14 +253,17 @@ function accuracyNeed(
 function responseTimeNeed(
   responseTimeMs,
 ) {
-  if (
-    !Number.isFinite(
-      responseTimeMs,
-    ) ||
-    responseTimeMs <= 0
-  ) {
-    return 0.5;
-  }
+  if (!Number.isFinite(responseTimeMs)) {
+  return 0.5;
+}
+
+if (responseTimeMs < 0) {
+  return 0;
+}
+
+if (responseTimeMs === 0) {
+  return 0.5;
+}
 
   const bounded =
     clamp(
@@ -733,16 +736,27 @@ function selectAdaptiveCharacters(
     );
 
   const weak =
-    ranked.filter(
-      (candidate) =>
-        isWeakCharacter(
-          candidate.stat ??
-            candidate,
-          {
-            learningPace,
-          },
-        ),
-    );
+  ranked.filter(
+    (candidate) => {
+      const stat =
+        candidate.stat ??
+        candidate;
+
+      if (
+        !includeNew &&
+        stat.attempts === 0
+      ) {
+        return false;
+      }
+
+      return isWeakCharacter(
+        stat,
+        {
+          learningPace,
+        },
+      );
+    },
+  );
 
   const newCharacters =
     includeNew
@@ -809,9 +823,21 @@ function selectAdaptiveCharacters(
   );
 
   /*
-   * Fill remaining slots using overall adaptive priority.
-   */
-  ranked.forEach(
+ * Fill remaining slots using overall adaptive priority.
+ *
+ * When includeNew is false, completely unpracticed characters
+ * must remain excluded from the final fill as well.
+ */
+ranked
+  .filter(
+    (candidate) =>
+      includeNew ||
+      (
+        candidate.stat ??
+        candidate
+      ).attempts > 0,
+  )
+  .forEach(
     addUnique,
   );
 

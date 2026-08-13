@@ -581,11 +581,14 @@ function calculateTrimmedMean(
       sorted.length;
   }
 
-  const trimCount =
+const trimCount =
+  Math.max(
+    1,
     Math.floor(
       sorted.length *
         trimRatio,
-    );
+    ),
+  );
 
   const start =
     trimCount;
